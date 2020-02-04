@@ -1,9 +1,13 @@
 package main
 
 import (
-	"fmt"
+	"github.com/qbart/timelog/timelog"
+	"log"
 )
 
 func main() {
-	fmt.Println("Timelog")
+	config, err := timelog.Load()
+	mgr := timelog.NewTimeLogger(config)
+	log.Println(mgr)
+	log.Println(err)
 }
