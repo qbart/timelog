@@ -134,6 +134,76 @@ func TestStart_WithExistingUnfinishedEntry(t *testing.T) {
 	}
 }
 
+func TestStop(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:01"),
+			},
+		},
+	}
+	tl := TimeLogger{
+		entries: entries,
+		factory: logtimeMockFactory{
+			now: makeTime("2020-01-15 22:02"),
+		},
+	}
+
+	tl.Stop()
+
+	assert.Equal(t, len(tl.entries), 1)
+	assert.Equal(t, tl.entries[0].comment, "hello")
+	assert.Equal(t, tl.entries[0].from, logtime{
+		finished: true,
+		t:        makeTime("2020-01-15 22:00"),
+	})
+	assert.Equal(t, tl.entries[0].to, logtime{
+		finished: true,
+		t:        makeTime("2020-01-15 22:01"),
+	})
+}
+
+func TestStop_WithUnfinishedEntry(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: false,
+				t:        makeTime("2020-01-15 22:01"),
+			},
+		},
+	}
+	tl := TimeLogger{
+		entries: entries,
+		factory: logtimeMockFactory{
+			now: makeTime("2020-01-15 22:02"),
+		},
+	}
+
+	tl.Stop()
+
+	assert.Equal(t, len(tl.entries), 1)
+	assert.Equal(t, tl.entries[0].comment, "hello")
+	assert.Equal(t, tl.entries[0].from, logtime{
+		finished: true,
+		t:        makeTime("2020-01-15 22:00"),
+	})
+	assert.Equal(t, tl.entries[0].to, logtime{
+		finished: true,
+		t:        makeTime("2020-01-15 22:01"),
+	})
+}
+
 func makeTime(value string) time.Time {
 	parsedTime, _ := time.Parse("2006-01-02 15:04", value)
 	return parsedTime

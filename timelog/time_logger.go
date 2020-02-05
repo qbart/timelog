@@ -61,10 +61,9 @@ func (t *TimeLogger) Start(comment string) {
 	}
 }
 
+// Stop closes existing unfinished entry.
 func (t *TimeLogger) Stop() {
-
-}
-
-func (t *TimeLogger) String() {
-
+	if len(t.entries) > 0 {
+		t.entries[len(t.entries)-1].to.finished = true
+	}
 }
