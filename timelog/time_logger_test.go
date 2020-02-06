@@ -204,6 +204,41 @@ func TestStop_WithUnfinishedEntry(t *testing.T) {
 	})
 }
 
+func TestString(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+		entry{
+			comment: "world",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+			to: logtime{
+				finished: false,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+	}
+
+	tl := TimeLogger{entries: entries}
+
+	result := tl.String()
+
+	expectedResult := "2020-01-15 22:00 22:05 hello\n2020-01-15 22:05 ...   world"
+
+	assert.Equal(t, result, expectedResult)
+}
+
 func makeTime(value string) time.Time {
 	parsedTime, _ := time.Parse("2006-01-02 15:04", value)
 	return parsedTime

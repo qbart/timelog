@@ -1,6 +1,7 @@
 package timelog
 
 import (
+	"strings"
 	"time"
 )
 
@@ -35,6 +36,7 @@ type logtime struct {
 	finished bool
 }
 
+// NewTimeLogger constructs new timelogger with default setup.
 func NewTimeLogger(config *Config) *TimeLogger {
 	return &TimeLogger{
 		config:  config,
@@ -66,4 +68,23 @@ func (t *TimeLogger) Stop() {
 	if len(t.entries) > 0 {
 		t.entries[len(t.entries)-1].to.finished = true
 	}
+}
+
+// String returns text representation of timelog.
+func (t *TimeLogger) String() string {
+	var sb strings.Builder
+	last := len(t.entries) - 1
+	for i, e := range t.entries {
+		sb.WriteString(e.from.t.Format("2006-01-02 15:04 "))
+		if e.to.finished {
+			sb.WriteString(e.to.t.Format("15:04 "))
+		} else {
+			sb.WriteString(e.to.t.Format("...   "))
+		}
+		sb.WriteString(e.comment)
+		if i != last {
+			sb.WriteString("\n")
+		}
+	}
+	return sb.String()
 }

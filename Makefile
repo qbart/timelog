@@ -1,7 +1,7 @@
 TEST?=./...
 
+run:
+	go run main.go -- $(ARGS)
+
 test:
 	go test $(TEST) -timeout=2m -parallel=4
-
-run:
-	go run -race main.go
