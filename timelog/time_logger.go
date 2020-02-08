@@ -71,11 +71,13 @@ func (t *TimeLogger) String() string {
 	var sb strings.Builder
 	last := len(t.entries) - 1
 	for i, e := range t.entries {
-		sb.WriteString(e.from.t.Format("2006-01-02 15:04 "))
+		sb.WriteString(FormatDateTime(e.from.t))
+		sb.WriteString(" ")
 		if e.to.finished {
-			sb.WriteString(e.to.t.Format("15:04 "))
+			sb.WriteString(FormatTime(e.to.t))
+			sb.WriteString(" ")
 		} else {
-			sb.WriteString(e.to.t.Format("...   "))
+			sb.WriteString("...   ")
 		}
 		sb.WriteString(e.comment)
 		if i != last {
