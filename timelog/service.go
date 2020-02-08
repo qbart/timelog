@@ -30,6 +30,13 @@ func (s *Service) Stop() {
 	s.writeToFile()
 }
 
+// Export timelog and sync.
+func (s *Service) Export() {
+	s.timelogger.Stop()
+	s.timelogger.Export()
+	s.writeToFile()
+}
+
 // String returns timelog.
 func (s *Service) String() string {
 	return s.timelogger.String()

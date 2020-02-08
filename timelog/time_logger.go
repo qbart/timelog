@@ -61,6 +61,11 @@ func (t *TimeLogger) Stop() {
 	}
 }
 
+// Export clears all entries.
+func (t *TimeLogger) Export() {
+	t.entries = make([]entry, 0, 10)
+}
+
 // String returns text representation of timelog.
 func (t *TimeLogger) String() string {
 	var sb strings.Builder
