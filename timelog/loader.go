@@ -36,21 +36,20 @@ func loadData() []entry {
 
 	for _, row := range rows {
 		fromLogtime := logtimeDefaultFactory{}.NewLogTime(true)
-		toLogtime := logtimeDefaultFactory{}.NewLogTime(true)
-
 		from, err := ParseDateTime(row[0])
 		if err != nil {
 			log.Fatal(err)
 		}
-		fromLogtime.t = from
+		fromLogtime.t = ToLocal(from)
 
+		toLogtime := logtimeDefaultFactory{}.NewLogTime(true)
 		to, err := ParseDateTime(row[1])
 		if row[1] == "" {
 			toLogtime.finished = false
 		} else if err != nil {
 			log.Fatal(err)
 		} else {
-			toLogtime.t = to
+			toLogtime.t = ToLocal(to)
 		}
 
 		e = append(e, entry{

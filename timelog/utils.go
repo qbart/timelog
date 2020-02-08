@@ -14,6 +14,12 @@ func ParseDateTime(value string) (time.Time, error) {
 	return time.Parse(formatDateTime, value)
 }
 
+// ToLocal converts time to local timezone.
+func ToLocal(t time.Time) time.Time {
+	local, _ := time.LoadLocation("Local")
+	return t.In(local)
+}
+
 // FormatDateTime formats datetime to string.
 func FormatDateTime(value time.Time) string {
 	return value.Format(formatDateTime)

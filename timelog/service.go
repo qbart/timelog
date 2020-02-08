@@ -47,6 +47,7 @@ func (s *Service) CalculateAnalytics() Analytics {
 	return calcAnalytics(s.timelogger.entries)
 }
 
+// writeToFile saves entries in UTC format.
 func (s *Service) writeToFile() {
 	f, err := os.Create(DataPath())
 	if err != nil {
@@ -59,10 +60,10 @@ func (s *Service) writeToFile() {
 	for _, e := range s.timelogger.entries {
 		to := ""
 		if e.to.finished {
-			to = FormatDateTime(e.to.t)
+			to = FormatDateTime(e.to.t.UTC())
 		}
 		w.Write([]string{
-			FormatDateTime(e.from.t),
+			FormatDateTime(e.from.t.UTC()),
 			to,
 			e.comment,
 		})

@@ -43,7 +43,7 @@ func print(s *timelog.Service) {
 	fmt.Println("---")
 	fmt.Println(s.String())
 	fmt.Println("---")
-	fmt.Println(analytics.Duration.String())
+	fmt.Print(int64(analytics.Duration.Hours()), "h", int64(analytics.Duration.Minutes()), "m")
 }
 
 func areYouSureToExport(yes func()) {
