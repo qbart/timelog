@@ -20,21 +20,30 @@ func main() {
 		switch flag.Arg(0) {
 		case "start":
 			service.Start(getComment())
-			fmt.Println(service.String())
+			print(service)
 
 		case "stop":
 			service.Stop()
-			fmt.Println(service.String())
+			print(service)
 
 		case "export":
-			fmt.Println(service.String())
+			print(service)
 			areYouSureToExport(func() {
 				service.Export()
 			})
 		}
 	} else {
-		fmt.Println(service.String())
+		print(service)
 	}
+}
+
+func print(s *timelog.Service) {
+	analytics := s.CalculateAnalytics()
+	fmt.Println(analytics.EntryNum, " row(s)")
+	fmt.Println("---")
+	fmt.Println(s.String())
+	fmt.Println("---")
+	fmt.Println(analytics.Duration.String())
 }
 
 func areYouSureToExport(yes func()) {

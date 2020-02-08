@@ -42,6 +42,11 @@ func (s *Service) String() string {
 	return s.timelogger.String()
 }
 
+// CalculateAnalytics returns generated stats.
+func (s *Service) CalculateAnalytics() Analytics {
+	return calcAnalytics(s.timelogger.entries)
+}
+
 func (s *Service) writeToFile() {
 	f, err := os.Create(DataPath())
 	if err != nil {
@@ -54,10 +59,10 @@ func (s *Service) writeToFile() {
 	for _, e := range s.timelogger.entries {
 		to := ""
 		if e.to.finished {
-			to = e.to.t.Format("2006-01-02 15:04")
+			to = FormatDateTime(e.to.t)
 		}
 		w.Write([]string{
-			e.from.t.Format("2006-01-02 15:04"),
+			FormatDateTime(e.from.t),
 			to,
 			e.comment,
 		})
