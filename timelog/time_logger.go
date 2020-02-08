@@ -36,15 +36,6 @@ type logtime struct {
 	finished bool
 }
 
-// NewTimeLogger constructs new timelogger with default setup.
-func NewTimeLogger(config *Config) *TimeLogger {
-	return &TimeLogger{
-		config:  config,
-		entries: make([]entry, 0, 10),
-		factory: logtimeDefaultFactory{},
-	}
-}
-
 // Start appends new time log entry closing last unclosed entry.
 func (t *TimeLogger) Start(comment string) {
 	entry := entry{

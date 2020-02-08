@@ -10,21 +10,18 @@ import (
 
 func main() {
 	flag.Parse()
-	config, err := timelog.Load()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	timelogger := timelog.Load()
+	service := timelog.NewService(timelogger)
 
-	timelogger := timelog.NewTimeLogger(config)
 	if flag.NArg() > 0 {
 		switch flag.Arg(0) {
 		case "start":
-			timelogger.Start(getComment())
+			service.Start(getComment())
 		case "stop":
-			timelogger.Stop()
+			service.Stop()
+			// case "export":
 		}
-		fmt.Println(timelogger.String())
+		fmt.Println(service.String())
 	}
 }
 
