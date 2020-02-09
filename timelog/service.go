@@ -18,6 +18,24 @@ func NewService(timelogger *TimeLogger) *Service {
 	}
 }
 
+// Load reads config and all time entries from files.
+func (s *Service) Load() (bool, error) {
+	c, err := loadConfig(s.timelogger.config.ConfigPath())
+	if err != nil {
+		return false, err
+	}
+
+	e, err := loadData(s.timelogger.config.DataPath())
+	if err != nil {
+		return false, err
+	}
+
+	s.timelogger.entries = e
+	s.timelogger.config.Quicklist = c.Quicklist
+
+	return true, nil
+}
+
 // Start timelog and sync.
 func (s *Service) Start(comment string) {
 	s.timelogger.Start(comment)
@@ -49,7 +67,7 @@ func (s *Service) CalculateAnalytics() Analytics {
 
 // writeToFile saves entries in UTC format.
 func (s *Service) writeToFile() {
-	f, err := os.Create(DataPath())
+	f, err := os.Create(s.timelogger.config.DataPath())
 	if err != nil {
 		log.Fatal(err)
 	}

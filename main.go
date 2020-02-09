@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
@@ -13,8 +14,13 @@ import (
 
 func main() {
 	flag.Parse()
-	timelogger := timelog.Load()
+	config := timelog.NewConfig(timelog.HomeDir())
+	timelogger := timelog.NewTimeLogger(config)
 	service := timelog.NewService(timelogger)
+	ok, err := service.Load()
+	if !ok {
+		log.Fatal(err)
+	}
 
 	if flag.NArg() > 0 {
 		switch flag.Arg(0) {

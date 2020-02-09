@@ -10,19 +10,18 @@ func Parse(data []byte) (*Config, error) {
 		AllowBooleanKeys: true,
 	}, data)
 
-	if err != nil {
-		return &Config{}, err
+	config := &Config{
+		Quicklist: make([]string, 0),
 	}
 
-	quicklist := make([]string, 0)
+	if err != nil {
+		return config, err
+	}
+
 	if sec, err := cfg.GetSection("quicklist"); err == nil {
 		for _, key := range sec.KeyStrings() {
-			quicklist = append(quicklist, key)
+			config.Quicklist = append(config.Quicklist, key)
 		}
-	}
-
-	config := &Config{
-		Quicklist: quicklist,
 	}
 
 	return config, nil

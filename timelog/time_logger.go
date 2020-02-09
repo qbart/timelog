@@ -24,6 +24,15 @@ type logtimeFactory interface {
 
 type logtimeDefaultFactory struct{}
 
+// NewTimeLogger creates new time logger.
+func NewTimeLogger(c *Config) *TimeLogger {
+	return &TimeLogger{
+		config:  c,
+		entries: make([]entry, 0),
+		factory: logtimeDefaultFactory{},
+	}
+}
+
 func (logtimeDefaultFactory) NewLogTime(finished bool) logtime {
 	return logtime{
 		t:        time.Now(),

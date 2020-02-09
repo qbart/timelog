@@ -7,24 +7,13 @@ import (
 	"os"
 )
 
-func init() {
-	touchFile(ConfigPath())
-	touchFile(DataPath())
+func loadConfig(path string) (*Config, error) {
+	configBytes := readfile(path)
+	return Parse(configBytes)
 }
 
-func loadConfig() *Config {
-	configBytes := readfile(ConfigPath())
-
-	config, err := Parse(configBytes)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return config
-}
-
-func loadData() []entry {
-	f, err := os.Open(DataPath())
+func loadData(path string) ([]entry, error) {
+	f, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +27,7 @@ func loadData() []entry {
 		fromLogtime := logtimeDefaultFactory{}.NewLogTime(true)
 		from, err := ParseDateTime(row[0])
 		if err != nil {
-			log.Fatal(err)
+			return e, err
 		}
 		fromLogtime.t = ToLocal(from)
 
@@ -47,7 +36,7 @@ func loadData() []entry {
 		if row[1] == "" {
 			toLogtime.finished = false
 		} else if err != nil {
-			log.Fatal(err)
+			return e, err
 		} else {
 			toLogtime.t = ToLocal(to)
 		}
@@ -59,23 +48,11 @@ func loadData() []entry {
 		})
 	}
 
-	return e
-}
-
-// Load reads config and all time entries from files.
-func Load() *TimeLogger {
-	config := loadConfig()
-	entries := loadData()
-
-	return &TimeLogger{
-		config:  config,
-		entries: entries,
-		factory: logtimeDefaultFactory{},
-	}
+	return e, nil
 }
 
 func readfile(path string) []byte {
-	file, err := os.Open(ConfigPath())
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -87,10 +64,4 @@ func readfile(path string) []byte {
 	}
 
 	return b
-}
-
-func touchFile(path string) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Create(path)
-	}
 }
