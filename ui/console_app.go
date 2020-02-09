@@ -52,7 +52,7 @@ func (app *ConsoleApp) print() {
 	fmt.Println("---")
 	fmt.Println(app.service.String())
 	fmt.Println("---")
-	fmt.Print(int64(analytics.Duration.Hours()), "h", int64(analytics.Duration.Minutes()), "m")
+	fmt.Print(int64(analytics.Duration.Hours()), "h", int64(analytics.Duration.Minutes()), "m", "\n")
 }
 
 func (ConsoleApp) areYouSureToExport(yes func()) {
