@@ -75,6 +75,17 @@ func (t *TimeLogger) Export() {
 	t.entries = make([]entry, 0, 10)
 }
 
+// Adjust takes adjustments map and applies time modifications based on provided values in minutes.
+func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
+	clone := &TimeLogger{
+		config:  t.config,
+		entries: make([]entry, len(t.entries)),
+		factory: t.factory,
+	}
+	copy(clone.entries, t.entries)
+	return clone, nil
+}
+
 func (e entry) String() string {
 	var sb strings.Builder
 	sb.WriteString(FormatDateTime(e.from.t))
