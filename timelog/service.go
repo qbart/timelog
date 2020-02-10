@@ -55,14 +55,9 @@ func (s *Service) Export() {
 	s.writeToFile()
 }
 
-// String returns timelog.
-func (s *Service) String() string {
-	return s.timelogger.String()
-}
-
-// CalculateAnalytics returns generated stats.
-func (s *Service) CalculateAnalytics() Analytics {
-	return calcAnalytics(s.timelogger.entries)
+// TextPrinter returns default stdout printer.
+func (s *Service) TextPrinter() TextPrinter {
+	return TextPrinter{timelogger: s.timelogger}
 }
 
 // writeToFile saves entries in UTC format.

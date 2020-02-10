@@ -2,7 +2,6 @@ package timelog
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -12,7 +11,7 @@ func TestCalcAnalytics(t *testing.T) {
 		entry{
 			comment: "hello",
 			from: logtime{
-				t: makeTime("2020-01-15 22:00"),
+				t: makeTime("2020-01-15 22:01"),
 			},
 			to: logtime{
 				t: makeTime("2020-01-15 22:05"),
@@ -24,12 +23,13 @@ func TestCalcAnalytics(t *testing.T) {
 				t: makeTime("2020-01-15 22:05"),
 			},
 			to: logtime{
-				t: makeTime("2020-01-15 23:01"),
+				t: makeTime("2020-01-15 23:16"),
 			},
 		},
 	}
 	analytics := calcAnalytics(ee)
 
 	assert.Equal(t, analytics.EntryNum, 2)
-	assert.Equal(t, analytics.Duration, time.Duration((3600+60)*1000*1000*1000))
+	assert.Equal(t, analytics.Hours, 1)
+	assert.Equal(t, analytics.Minutes, 15)
 }

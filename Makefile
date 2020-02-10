@@ -12,6 +12,9 @@ stop:
 export:
 	go run main.go -- export
 
+adjust:
+	go run main.go -- adjust
+
 build:
 	mkdir -p bin/
 	go build -o bin/timelog

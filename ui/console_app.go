@@ -3,8 +3,6 @@ package ui
 import (
 	"bufio"
 	"flag"
-	"fmt"
-	"math"
 	"os"
 	"strings"
 
@@ -38,9 +36,11 @@ func (app *ConsoleApp) Run() {
 
 		case "export":
 			app.print()
-			app.areYouSureToExport(func() {
+			app.areYouSure("Are you sure to export (local data will be cleared)?", func() {
 				app.service.Export()
 			})
+
+		case "adjust":
 		}
 	} else {
 		app.print()
@@ -48,17 +48,12 @@ func (app *ConsoleApp) Run() {
 }
 
 func (app *ConsoleApp) print() {
-	analytics := app.service.CalculateAnalytics()
-	fmt.Println(analytics.EntryNum, " row(s)")
-	fmt.Println("---")
-	fmt.Println(app.service.String())
-	fmt.Println("---")
-	fmt.Print(int64(analytics.Duration.Hours()), "h", int64(math.Mod(analytics.Duration.Minutes(), 60)), "m", "\n")
+	app.service.TextPrinter().Print()
 }
 
-func (ConsoleApp) areYouSureToExport(yes func()) {
+func (ConsoleApp) areYouSure(msg string, yes func()) {
 	red := color.New(color.FgRed)
-	red.Print("Are you sure to export (local data will be cleared)? y/N: ")
+	red.Print(msg, " y/N: ")
 
 	r := bufio.NewReader(os.Stdin)
 	s, _ := r.ReadString('\n')
