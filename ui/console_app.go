@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"math"
 	"os"
 	"strings"
 
@@ -52,7 +53,7 @@ func (app *ConsoleApp) print() {
 	fmt.Println("---")
 	fmt.Println(app.service.String())
 	fmt.Println("---")
-	fmt.Print(int64(analytics.Duration.Hours()), "h", int64(analytics.Duration.Minutes()), "m", "\n")
+	fmt.Print(int64(analytics.Duration.Hours()), "h", int64(math.Mod(analytics.Duration.Minutes(), 60)), "m", "\n")
 }
 
 func (ConsoleApp) areYouSureToExport(yes func()) {
