@@ -56,8 +56,13 @@ func (s *Service) Export() {
 }
 
 // TextPrinter returns default stdout printer.
-func (s *Service) TextPrinter() TextPrinter {
-	return TextPrinter{timelogger: s.timelogger}
+func (s *Service) TextPrinter() Printer {
+	return &TextPrinter{timelogger: s.timelogger}
+}
+
+// AdjustPrinter returns adjust stdout printer.
+func (s *Service) AdjustPrinter() Printer {
+	return &AdjustPrinter{timelogger: s.timelogger}
 }
 
 // writeToFile saves entries in UTC format.

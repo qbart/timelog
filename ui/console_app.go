@@ -41,6 +41,7 @@ func (app *ConsoleApp) Run() {
 			})
 
 		case "adjust":
+			app.service.AdjustPrinter().Print()
 		}
 	} else {
 		app.print()

@@ -1,6 +1,7 @@
 package timelog
 
 import (
+	"strings"
 	"time"
 )
 
@@ -72,4 +73,18 @@ func (t *TimeLogger) Stop() {
 // Export clears all entries.
 func (t *TimeLogger) Export() {
 	t.entries = make([]entry, 0, 10)
+}
+
+func (e entry) String() string {
+	var sb strings.Builder
+	sb.WriteString(FormatDateTime(e.from.t))
+	sb.WriteString(" ")
+	if e.to.finished {
+		sb.WriteString(FormatTime(e.to.t))
+		sb.WriteString(" ")
+	} else {
+		sb.WriteString("...   ")
+	}
+	sb.WriteString(e.comment)
+	return sb.String()
 }

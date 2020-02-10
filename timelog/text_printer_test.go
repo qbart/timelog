@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestString(t *testing.T) {
+func Test_TextPrinter_String(t *testing.T) {
 	entries := []entry{
 		entry{
 			comment: "hello",
