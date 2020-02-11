@@ -42,3 +42,55 @@ func Test_TextPrinter_String(t *testing.T) {
 
 	assert.Equal(t, result, expectedResult)
 }
+
+func Test_TextPrinter_String_SplitDays(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-16 01:05"),
+			},
+		},
+	}
+
+	p := TextPrinter{
+		timelogger: &TimeLogger{entries: entries},
+	}
+
+	result := p.String()
+
+	expectedResult := "2020-01-15 22:00 23:59 hello\n2020-01-16 00:00 01:05 hello"
+
+	assert.Equal(t, result, expectedResult)
+}
+
+func Test_TextPrinter_String_SplitDaysWithUnfinishedEntry(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: false,
+				t:        makeTime("2020-01-16 01:05"),
+			},
+		},
+	}
+
+	p := TextPrinter{
+		timelogger: &TimeLogger{entries: entries},
+	}
+
+	result := p.String()
+
+	expectedResult := "2020-01-15 22:00 ...   hello"
+
+	assert.Equal(t, result, expectedResult)
+}
