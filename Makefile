@@ -15,6 +15,9 @@ export:
 adjust:
 	go run main.go -- adjust
 
+version:
+	go run main.go -- version
+
 build:
 	mkdir -p bin/
 	go build -o bin/timelog
