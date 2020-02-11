@@ -3,7 +3,7 @@ package ui
 import (
 	"bufio"
 	"flag"
-        "fmt"
+	"fmt"
 	"os"
 	"strings"
 
@@ -45,7 +45,7 @@ func (app *ConsoleApp) Run() {
 			app.service.AdjustPrinter().Print()
 
 		case "version":
-                        fmt.Println("Version ", timelog.Version)
+			fmt.Println("Version ", timelog.Version)
 		}
 	} else {
 		app.print()
