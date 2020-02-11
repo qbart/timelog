@@ -64,7 +64,7 @@ func Test_TextPrinter_String_SplitDays(t *testing.T) {
 
 	result := p.String()
 
-        expectedResult := "2020-01-15 22:00 23:59 hello\n2020-01-16 00:00 01:05 hello"
+	expectedResult := "2020-01-15 22:00 23:59 hello\n2020-01-16 00:00 01:05 hello"
 
 	assert.Equal(t, result, expectedResult)
 }
@@ -90,7 +90,7 @@ func Test_TextPrinter_String_SplitDaysWithUnfinishedEntry(t *testing.T) {
 
 	result := p.String()
 
-        expectedResult := "2020-01-15 22:00 ...   hello"
+	expectedResult := "2020-01-15 22:00 ...   hello"
 
 	assert.Equal(t, result, expectedResult)
 }
