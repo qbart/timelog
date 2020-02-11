@@ -6,6 +6,7 @@ import (
 
 const (
 	formatDateTime = "2006-01-02 15:04"
+	formatDate     = "2006-01-02"
 	formatTime     = "15:04"
 )
 
@@ -28,4 +29,9 @@ func FormatDateTime(value time.Time) string {
 // FormatTime formats time to string.
 func FormatTime(value time.Time) string {
 	return value.Format(formatTime)
+}
+
+// FormatDate formats date to string.
+func FormatDate(value time.Time) string {
+	return value.Format(formatDate)
 }
