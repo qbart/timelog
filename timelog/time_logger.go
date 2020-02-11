@@ -83,7 +83,36 @@ func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
 		factory: t.factory,
 	}
 	copy(clone.entries, t.entries)
+	n := len(clone.entries)
+	const notChanged = -1
+	for i := 0; i <= n; i++ {
+		d := adjustments[i]
+		if d != 0 {
+			from := notChanged
+			to := notChanged
+			if i == 0 {
+				from = 0
+			} else if i == 1 {
+				to = i - 1
+				from = i
+			} else if i == n {
+				to = i - 1
+			}
+
+			if from != notChanged {
+				clone.entries[from].from.t = clone.entries[from].from.t.Add(minutes(d))
+			}
+			if to != notChanged {
+				clone.entries[to].to.t = clone.entries[to].to.t.Add(minutes(d))
+			}
+		}
+	}
+
 	return clone, nil
+}
+
+func minutes(d int) time.Duration {
+	return time.Duration(d * 60_000_000_000)
 }
 
 func (e entry) String() string {
