@@ -97,6 +97,9 @@ func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
 				from = i
 			} else if i == n {
 				to = i - 1
+				if !clone.entries[to].to.finished {
+					to = notChanged
+				}
 			}
 
 			if from != notChanged {

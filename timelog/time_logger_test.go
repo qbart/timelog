@@ -262,7 +262,7 @@ func TestAdjust_ValidClone(t *testing.T) {
 	assert.Equal(t, tl.factory, clone.factory)
 }
 
-func TestAdjust(t *testing.T) {
+func TestAdjust_DurationDoesNotCrossOver_FinishedEntry(t *testing.T) {
 	entries := []entry{
 		entry{
 			comment: "hello",
@@ -309,6 +309,55 @@ func TestAdjust(t *testing.T) {
 	assert.Equal(t, clone.entries[0].to.t, makeTime("2020-01-15 21:59"))
 	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 21:59"))
 	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:15"))
+}
+
+func TestAdjust_DurationDoesNotCrossOver_UnfinishedEntry(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+		entry{
+			comment: "world",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+			to: logtime{
+				finished: false,
+				t:        makeTime("2020-01-15 22:10"),
+			},
+		},
+	}
+
+	tl := TimeLogger{entries: entries}
+	clone, err := tl.Adjust(map[int]int{
+		0: -3, // adjust time in "0" point -3 minutes
+		1: -6, // adjust time in "1" point -6 minutes
+		2: 5,  // adjust time in "2" point +5 minutes
+	})
+
+	assert.Nil(t, err)
+	assert.NotNil(t, clone)
+
+	// original entries are not modified
+	assert.Equal(t, tl.entries[0].from.t, makeTime("2020-01-15 22:00"))
+	assert.Equal(t, tl.entries[0].to.t, makeTime("2020-01-15 22:05"))
+	assert.Equal(t, tl.entries[1].from.t, makeTime("2020-01-15 22:05"))
+	assert.Equal(t, tl.entries[1].to.t, makeTime("2020-01-15 22:10"))
+
+	// cloned objects contains modified entries
+	assert.Equal(t, clone.entries[0].from.t, makeTime("2020-01-15 21:57"))
+	assert.Equal(t, clone.entries[0].to.t, makeTime("2020-01-15 21:59"))
+	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 21:59"))
+	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
 }
 
 func makeTime(value string) time.Time {
