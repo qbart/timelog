@@ -119,29 +119,29 @@ func minutes(d int) time.Duration {
 }
 
 func (e entry) String() string {
-	var sb strings.Builder
+  var sb strings.Builder
 
-        sb.WriteString(FormatDateTime(e.from.t))
-        sb.WriteString(" ")
+  sb.WriteString(FormatDateTime(e.from.t))
+  sb.WriteString(" ")
 
-        if  e.from.t.Day() != e.to.t.Day() {
-          sb.WriteString("23:59 ")
-          sb.WriteString(e.comment)
+  if e.to.finished {
+    if  e.from.t.Day() != e.to.t.Day() {
+      sb.WriteString("23:59 ")
+      sb.WriteString(e.comment)
 
-          sb.WriteString("\n")
-          sb.WriteString(FormatDate(e.to.t))
-          sb.WriteString(" 00:00 ")
-          sb.WriteString(FormatTime(e.to.t))
-          sb.WriteString(" ")
-        } else {
-          if e.to.finished {
-                  sb.WriteString(FormatTime(e.to.t))
-                  sb.WriteString(" ")
-          } else {
-                  sb.WriteString("...   ")
-          }
-        }
+      sb.WriteString("\n")
+      sb.WriteString(FormatDate(e.to.t))
+      sb.WriteString(" 00:00 ")
+      sb.WriteString(FormatTime(e.to.t))
+      sb.WriteString(" ")
+    } else {
+      sb.WriteString(FormatTime(e.to.t))
+      sb.WriteString(" ")
+    }
+  } else {
+    sb.WriteString("...   ")
+  }
 
-	sb.WriteString(e.comment)
-	return sb.String()
+  sb.WriteString(e.comment)
+  return sb.String()
 }
