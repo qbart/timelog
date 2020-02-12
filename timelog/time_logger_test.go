@@ -360,6 +360,170 @@ func TestAdjust_DurationDoesNotCrossOver_UnfinishedEntry(t *testing.T) {
 	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
 }
 
+func TestAdjust_DurationNegativeCrossOver_FinishedEntry(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+		entry{
+			comment: "world",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:10"),
+			},
+		},
+	}
+
+	tl := TimeLogger{entries: entries}
+	clone, err := tl.Adjust(map[int]int{
+		1: -6, // adjust time in "1" point -6 minutes
+	})
+
+	assert.Nil(t, err)
+	assert.NotNil(t, clone)
+
+	// cloned objects contains modified entries
+	assert.Equal(t, clone.entries[0].from.t, makeTime("2020-01-15 22:00"))
+	assert.Equal(t, clone.entries[0].to.t, makeTime("2020-01-15 22:00"))   // -6m -> 22:00 (can't go lower than previous)
+	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 22:00")) // same as above
+	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
+}
+
+func TestAdjust_DurationNegativeCrossOver_UnfinishedEntry(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+		entry{
+			comment: "world",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+			to: logtime{
+				finished: false,
+				t:        makeTime("2020-01-15 22:10"),
+			},
+		},
+	}
+
+	tl := TimeLogger{entries: entries}
+	clone, err := tl.Adjust(map[int]int{
+		2: -6, // adjust time in "2" point -6 minutes
+	})
+
+	assert.Nil(t, err)
+	assert.NotNil(t, clone)
+
+	// cloned objects contains modified entries
+	assert.Equal(t, clone.entries[0].from.t, makeTime("2020-01-15 22:00"))
+	assert.Equal(t, clone.entries[0].to.t, makeTime("2020-01-15 22:05"))
+	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 22:05"))
+	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
+}
+
+func TestAdjust_DurationPositiveCrossOver_FinishedEntry(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+		entry{
+			comment: "world",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:10"),
+			},
+		},
+	}
+
+	tl := TimeLogger{entries: entries}
+	clone, err := tl.Adjust(map[int]int{
+		1: 6, // adjust time in "1" point +6 minutes
+	})
+
+	assert.Nil(t, err)
+	assert.NotNil(t, clone)
+
+	// cloned objects contains modified entries
+	assert.Equal(t, clone.entries[0].from.t, makeTime("2020-01-15 22:00"))
+	assert.Equal(t, clone.entries[0].to.t, makeTime("2020-01-15 22:10"))   // +6m -> 22:10 (can't go higher than next)
+	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 22:10")) // same as above
+	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
+}
+
+func TestAdjust_DurationPositiveCrossOver_UninishedEntry(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+		entry{
+			comment: "world",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+			to: logtime{
+				finished: false,
+				t:        makeTime("2020-01-15 22:10"),
+			},
+		},
+	}
+
+	tl := TimeLogger{entries: entries}
+	clone, err := tl.Adjust(map[int]int{
+		1: 6, // adjust time in "1" point +6 minutes
+	})
+
+	assert.Nil(t, err)
+	assert.NotNil(t, clone)
+
+	// cloned objects contains modified entries
+	assert.Equal(t, clone.entries[0].from.t, makeTime("2020-01-15 22:00"))
+	assert.Equal(t, clone.entries[0].to.t, makeTime("2020-01-15 22:10"))   // +6m -> 22:10 (can't go higher than next)
+	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 22:10")) // same as above
+	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
+}
+
 func makeTime(value string) time.Time {
 	parsedTime, _ := time.Parse("2006-01-02 15:04", value)
 	return parsedTime

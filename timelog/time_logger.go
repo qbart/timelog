@@ -77,14 +77,18 @@ func (t *TimeLogger) Export() {
 
 // Adjust takes adjustments map and applies time modifications based on provided values in minutes.
 func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
+	var err error = nil
+
 	clone := &TimeLogger{
 		config:  t.config,
 		entries: make([]entry, len(t.entries)),
 		factory: t.factory,
 	}
 	copy(clone.entries, t.entries)
+
 	n := len(clone.entries)
 	const notChanged = -1
+
 	for i := 0; i <= n; i++ {
 		d := adjustments[i]
 		if d != 0 {
@@ -92,26 +96,54 @@ func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
 			to := notChanged
 			if i == 0 {
 				from = 0
-			} else if i == 1 {
-				to = i - 1
-				from = i
 			} else if i == n {
 				to = i - 1
 				if !clone.entries[to].to.finished {
 					to = notChanged
 				}
+			} else {
+				to = i - 1
+				from = i
 			}
 
 			if from != notChanged {
 				clone.entries[from].from.t = clone.entries[from].from.t.Add(minutes(d))
 			}
+
 			if to != notChanged {
 				clone.entries[to].to.t = clone.entries[to].to.t.Add(minutes(d))
 			}
 		}
 	}
 
-	return clone, nil
+	for i := 0; i <= n; i++ {
+		d := adjustments[i]
+		if d != 0 {
+			// A,[from,to],A,[from,to],A
+			p1 := i*3 - 1
+			n1 := i*3 + 1
+
+			if d < 0 {
+				if p1 >= 0 {
+					if clone.entries[p1/3].to.t.Before(clone.entries[p1/3].from.t) {
+						t := clone.entries[p1/3].from.t
+						clone.entries[p1/3].to.t = t
+						clone.entries[n1/3].from.t = t
+					}
+				}
+			} else {
+				if n1/3 < n {
+					if clone.entries[n1/3].from.t.After(clone.entries[n1/3].to.t) {
+						t := clone.entries[n1/3].to.t
+						clone.entries[n1/3].from.t = t
+						clone.entries[p1/3].to.t = t
+					}
+				}
+			}
+		}
+	}
+
+	return clone, err
 }
 
 func minutes(d int) time.Duration {
