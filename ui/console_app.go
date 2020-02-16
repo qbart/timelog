@@ -46,8 +46,11 @@ func (app *ConsoleApp) Run() {
 			modified, _ := app.service.Adjust(map[int]int{
 				0: 5,
 			})
+			fmt.Println("")
 			app.service.ColoredDiffPrinter(modified).Print()
-
+			app.areYouSure("Are you sure to apply changes?", func() {
+				fmt.Println("-- dry run --")
+			})
 		case "version":
 			fmt.Println("Version ", timelog.Version)
 		}

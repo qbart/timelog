@@ -34,12 +34,11 @@ func (p *DiffPrinter) String() string {
 			fromIsDifferent, toIsDifferent bool,
 		) {
 			sb.WriteRune(ch)
-			sb.WriteString(" ")
 			sb.WriteString(e.FromDateString())
 			sb.WriteString(" ")
-			sb.WriteString(wrapDiff(e.FromTimeString(), fromIsDifferent))
+			sb.WriteString(wrapBrackets(e.FromTimeString(), fromIsDifferent))
 			sb.WriteString(" ")
-			sb.WriteString(wrapDiff(e.ToTimeString(), toIsDifferent))
+			sb.WriteString(wrapBrackets(e.ToTimeString(), toIsDifferent))
 			sb.WriteString(" ")
 			sb.WriteString(e.comment)
 			if !last {
@@ -59,9 +58,9 @@ func (p *DiffPrinter) String() string {
 	return sb.String()
 }
 
-func wrapDiff(s string, diff bool) string {
-	if diff {
-		return fmt.Sprint("{", s, "}")
+func wrapBrackets(s string, wrap bool) string {
+	if wrap {
+		return fmt.Sprint("[", s, "]")
 	}
 
 	return s

@@ -26,7 +26,7 @@ func (p *ColoredDiffPrinter) String() string {
 	diff := p.diffPrinter.String()
 	lines := strings.Split(diff, "\n")
 
-	re := regexp.MustCompile(`{([\d:]+)}`)
+	re := regexp.MustCompile(`\[([\d:]+)\]`)
 
 	if len(diff) > 0 {
 		for i, line := range lines {

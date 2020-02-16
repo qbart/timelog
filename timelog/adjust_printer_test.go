@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_AdjustPrinter_String_WithFinishedEntry(t *testing.T) {
+func Test_AdjustPrinter_String_DefaultSelection(t *testing.T) {
 	entries := []entry{
 		entry{
 			comment: "hello",
@@ -37,24 +37,15 @@ func Test_AdjustPrinter_String_WithFinishedEntry(t *testing.T) {
 
 	result := p.String()
 
-	expectedResult := "- 0 -\n2020-01-15 22:00 22:05 hello\n- 1 -\n2020-01-15 22:05 22:10 world\n- 2 -"
+	expectedResult := trimHeredoc(`
+		2020-01-15 [22:00] 22:05  hello
+		2020-01-15  22:05  22:10  world
+	`)
 
 	assert.Equal(t, expectedResult, result)
 }
 
-func Test_AdjustPrinter_String_Empty(t *testing.T) {
-	p := AdjustPrinter{
-		timelogger: &TimeLogger{entries: []entry{}},
-	}
-
-	result := p.String()
-
-	expectedResult := ""
-
-	assert.Equal(t, expectedResult, result)
-}
-
-func Test_AdjustPrinter_String_WithUnfinishedEntry(t *testing.T) {
+func Test_AdjustPrinter_String_SelectionBetween(t *testing.T) {
 	entries := []entry{
 		entry{
 			comment: "hello",
@@ -74,18 +65,74 @@ func Test_AdjustPrinter_String_WithUnfinishedEntry(t *testing.T) {
 				t:        makeTime("2020-01-15 22:05"),
 			},
 			to: logtime{
-				finished: false,
-				t:        makeTime("2020-01-15 22:05"),
+				finished: true,
+				t:        makeTime("2020-01-15 22:10"),
 			},
 		},
 	}
 	p := AdjustPrinter{
 		timelogger: &TimeLogger{entries: entries},
+		selected:   1,
 	}
 
 	result := p.String()
 
-	expectedResult := "- 0 -\n2020-01-15 22:00 22:05 hello\n- 1 -\n2020-01-15 22:05 ...   world"
+	expectedResult := trimHeredoc(`
+		2020-01-15  22:00 [22:05] hello
+		2020-01-15 [22:05] 22:10  world
+	`)
+
+	assert.Equal(t, expectedResult, result)
+}
+
+func Test_AdjustPrinter_String_SelectionLast(t *testing.T) {
+	entries := []entry{
+		entry{
+			comment: "hello",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:00"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+		},
+		entry{
+			comment: "world",
+			from: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:05"),
+			},
+			to: logtime{
+				finished: true,
+				t:        makeTime("2020-01-15 22:10"),
+			},
+		},
+	}
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{entries: entries},
+		selected:   2,
+	}
+
+	result := p.String()
+
+	expectedResult := trimHeredoc(`
+		2020-01-15  22:00  22:05  hello
+		2020-01-15  22:05 [22:10] world
+	`)
+
+	assert.Equal(t, expectedResult, result)
+}
+
+func Test_AdjustPrinter_String_Empty(t *testing.T) {
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{entries: []entry{}},
+	}
+
+	result := p.String()
+
+	expectedResult := ""
 
 	assert.Equal(t, expectedResult, result)
 }
