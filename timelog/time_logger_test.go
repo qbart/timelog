@@ -238,7 +238,7 @@ func TestExport(t *testing.T) {
 	assert.Len(t, tl.entries, 0)
 }
 
-func TestAdjust_ValidClone(t *testing.T) {
+func TestAdjust_Adjust_ValidClone(t *testing.T) {
 	entries := []entry{
 		entry{
 			comment: "hello",
@@ -522,9 +522,4 @@ func TestAdjust_DurationPositiveCrossOver_UninishedEntry(t *testing.T) {
 	assert.Equal(t, clone.entries[0].to.t, makeTime("2020-01-15 22:10"))   // +6m -> 22:10 (can't go higher than next)
 	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 22:10")) // same as above
 	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
-}
-
-func makeTime(value string) time.Time {
-	parsedTime, _ := time.Parse("2006-01-02 15:04", value)
-	return parsedTime
 }

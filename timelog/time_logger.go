@@ -77,7 +77,7 @@ func (t *TimeLogger) Export() {
 
 // Adjust takes adjustments map and applies time modifications based on provided values in minutes.
 func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
-	var err error = nil
+	const notChanged = -1
 
 	clone := &TimeLogger{
 		config:  t.config,
@@ -87,7 +87,9 @@ func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
 	copy(clone.entries, t.entries)
 
 	n := len(clone.entries)
-	const notChanged = -1
+	if n == 0 {
+		return clone, nil
+	}
 
 	for i := 0; i <= n; i++ {
 		d := adjustments[i]
@@ -143,7 +145,7 @@ func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
 		}
 	}
 
-	return clone, err
+	return clone, nil
 }
 
 func minutes(d int) time.Duration {
@@ -153,7 +155,9 @@ func minutes(d int) time.Duration {
 func (e entry) String() string {
 	var sb strings.Builder
 
-	sb.WriteString(FormatDateTime(e.from.t))
+	sb.WriteString(e.FromDateString())
+	sb.WriteString(" ")
+	sb.WriteString(e.FromTimeString())
 	sb.WriteString(" ")
 
 	if e.to.finished {
@@ -162,18 +166,39 @@ func (e entry) String() string {
 			sb.WriteString(e.comment)
 
 			sb.WriteString("\n")
-			sb.WriteString(FormatDate(e.to.t))
+			sb.WriteString(e.ToDateString())
 			sb.WriteString(" 00:00 ")
-			sb.WriteString(FormatTime(e.to.t))
+			sb.WriteString(e.ToTimeString())
 			sb.WriteString(" ")
 		} else {
-			sb.WriteString(FormatTime(e.to.t))
+			sb.WriteString(e.ToTimeString())
 			sb.WriteString(" ")
 		}
 	} else {
-		sb.WriteString("...   ")
+		sb.WriteString(e.ToTimeString())
+		sb.WriteString(" ")
 	}
 
 	sb.WriteString(e.comment)
 	return sb.String()
+}
+
+func (e entry) FromDateString() string {
+	return FormatDate(e.from.t)
+}
+
+func (e entry) ToDateString() string {
+	return FormatDate(e.to.t)
+}
+
+func (e entry) FromTimeString() string {
+	return FormatTime(e.from.t)
+}
+
+func (e entry) ToTimeString() string {
+	if e.to.finished {
+		return FormatTime(e.to.t)
+	}
+
+	return "...  "
 }

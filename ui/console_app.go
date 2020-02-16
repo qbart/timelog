@@ -43,6 +43,10 @@ func (app *ConsoleApp) Run() {
 
 		case "adjust":
 			app.service.AdjustPrinter().Print()
+			modified, _ := app.service.Adjust(map[int]int{
+				0: 5,
+			})
+			app.service.ColoredDiffPrinter(modified).Print()
 
 		case "version":
 			fmt.Println("Version ", timelog.Version)

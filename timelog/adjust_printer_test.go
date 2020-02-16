@@ -39,7 +39,19 @@ func Test_AdjustPrinter_String_WithFinishedEntry(t *testing.T) {
 
 	expectedResult := "- 0 -\n2020-01-15 22:00 22:05 hello\n- 1 -\n2020-01-15 22:05 22:10 world\n- 2 -"
 
-	assert.Equal(t, result, expectedResult)
+	assert.Equal(t, expectedResult, result)
+}
+
+func Test_AdjustPrinter_String_Empty(t *testing.T) {
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{entries: []entry{}},
+	}
+
+	result := p.String()
+
+	expectedResult := ""
+
+	assert.Equal(t, expectedResult, result)
 }
 
 func Test_AdjustPrinter_String_WithUnfinishedEntry(t *testing.T) {
@@ -75,5 +87,5 @@ func Test_AdjustPrinter_String_WithUnfinishedEntry(t *testing.T) {
 
 	expectedResult := "- 0 -\n2020-01-15 22:00 22:05 hello\n- 1 -\n2020-01-15 22:05 ...   world"
 
-	assert.Equal(t, result, expectedResult)
+	assert.Equal(t, expectedResult, result)
 }

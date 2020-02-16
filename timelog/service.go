@@ -55,6 +55,11 @@ func (s *Service) Export() {
 	s.writeToFile()
 }
 
+// Adjust timelog.
+func (s *Service) Adjust(adjustments map[int]int) (*TimeLogger, error) {
+	return s.timelogger.Adjust(adjustments)
+}
+
 // TextPrinter returns default stdout printer.
 func (s *Service) TextPrinter() Printer {
 	return &TextPrinter{timelogger: s.timelogger}
@@ -63,6 +68,16 @@ func (s *Service) TextPrinter() Printer {
 // AdjustPrinter returns adjust stdout printer.
 func (s *Service) AdjustPrinter() Printer {
 	return &AdjustPrinter{timelogger: s.timelogger}
+}
+
+// ColoredDiffPrinter returns diff of adjust operation.
+func (s *Service) ColoredDiffPrinter(modified *TimeLogger) Printer {
+	return &ColoredDiffPrinter{
+		diffPrinter: &DiffPrinter{
+			timeloggerOriginal: s.timelogger,
+			timeloggerModified: modified,
+		},
+	}
 }
 
 // writeToFile saves entries in UTC format.
