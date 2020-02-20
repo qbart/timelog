@@ -41,4 +41,14 @@ timelog clear
 ```
 
 1. Current timelog will be printed.
-2. Once confirmed local database will be cleared.
+2. Once confirmed local database will be cleared :warning:.
+
+### Adjust time
+
+```
+timelog adjust
+```
+
+1. Console UI will start (use arrows or hjkl).
+2. Enter to continue.
+3. After changes you will see git-like diff to accept/reject changes.

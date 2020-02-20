@@ -35,6 +35,7 @@ func (p *AdjustPrinter) Print() {
 	widget.WrapText = false
 	widget.Border = false
 	widget.Text = p.String()
+	widget.Title = "[j][k][up][down] select, [h][l][left][right] -/+ minute"
 	widget.SetRect(0, 0, w, h)
 
 	ui.Render(widget)
