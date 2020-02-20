@@ -34,10 +34,10 @@ timelog start <comment>
 timelog stop
 ```
 
-### Export
+### Clear
 
 ```
-timelog export
+timelog clear
 ```
 
 1. Current timelog will be printed.

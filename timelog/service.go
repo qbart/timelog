@@ -65,19 +65,12 @@ func (s *Service) TextPrinter() Printer {
 	return &TextPrinter{timelogger: s.timelogger}
 }
 
-// AdjustPrinter returns adjust stdout printer.
-func (s *Service) AdjustPrinter() Printer {
-	return &AdjustPrinter{timelogger: s.timelogger}
-}
-
-// ColoredDiffPrinter returns diff of adjust operation.
-func (s *Service) ColoredDiffPrinter(modified *TimeLogger) Printer {
-	return &ColoredDiffPrinter{
-		diffPrinter: &DiffPrinter{
-			timeloggerOriginal: s.timelogger,
-			timeloggerModified: modified,
-		},
-	}
+// RunAdjustService runs adjust subservice.
+func (s *Service) RunAdjustService() {
+	srv := &AdjustService{timelogger: s.timelogger}
+	srv.Run(func() {
+		s.writeToFile()
+	})
 }
 
 // writeToFile saves entries in UTC format.

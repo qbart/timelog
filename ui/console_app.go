@@ -1,13 +1,11 @@
 package ui
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
-	"os"
 	"strings"
 
-	"github.com/fatih/color"
+	"github.com/qbart/timelog/cli"
 	"github.com/qbart/timelog/timelog"
 )
 
@@ -35,22 +33,15 @@ func (app *ConsoleApp) Run() {
 			app.service.Stop()
 			app.print()
 
-		case "export":
+		case "clear":
 			app.print()
-			app.areYouSure("Are you sure to export (local data will be cleared)?", func() {
+			cli.AreYouSure("Are you sure to clear all data?", func() {
 				app.service.Export()
-			})
+			}, func() {})
 
 		case "adjust":
-			app.service.AdjustPrinter().Print()
-			modified, _ := app.service.Adjust(map[int]int{
-				0: 5,
-			})
-			fmt.Println("")
-			app.service.ColoredDiffPrinter(modified).Print()
-			app.areYouSure("Are you sure to apply changes?", func() {
-				fmt.Println("-- dry run --")
-			})
+			app.service.RunAdjustService()
+
 		case "version":
 			fmt.Println("Version ", timelog.Version)
 		}
@@ -61,18 +52,6 @@ func (app *ConsoleApp) Run() {
 
 func (app *ConsoleApp) print() {
 	app.service.TextPrinter().Print()
-}
-
-func (ConsoleApp) areYouSure(msg string, yes func()) {
-	red := color.New(color.FgRed)
-	red.Print(msg, " y/N: ")
-
-	r := bufio.NewReader(os.Stdin)
-	s, _ := r.ReadString('\n')
-	s = string(s[0])
-	if s == "y" || s == "Y" {
-		yes()
-	}
 }
 
 func (ConsoleApp) getComment() string {
