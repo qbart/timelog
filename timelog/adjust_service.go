@@ -33,6 +33,7 @@ func (p *AdjustService) Run(success func()) {
 		},
 	}
 	diffPrinter.Print()
+	fmt.Println("")
 
 	cli.AreYouSure("Are you sure to apply changes?", func() {
 		*p.timelogger = *adjustPrinter.timelogger
