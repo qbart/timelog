@@ -73,6 +73,11 @@ func (s *Service) RunAdjustService() {
 	})
 }
 
+// Quicklist returns qlist entries.
+func (s *Service) Quicklist() []string {
+	return CloneStrings(s.timelogger.config.Quicklist)
+}
+
 // writeToFile saves entries in UTC format.
 func (s *Service) writeToFile() {
 	f, err := os.Create(s.timelogger.config.DataPath())

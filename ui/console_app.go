@@ -3,6 +3,9 @@ package ui
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/qbart/timelog/cli"
@@ -23,7 +26,8 @@ func NewConsoleApp(service *timelog.Service) App {
 
 // Run CLI app.
 func (app *ConsoleApp) Run() {
-	if flag.NArg() > 0 {
+	n := flag.NArg()
+	if n > 0 {
 		switch flag.Arg(0) {
 		case "start":
 			app.service.Start(app.getComment())
@@ -41,6 +45,36 @@ func (app *ConsoleApp) Run() {
 			}, func() {
 				fmt.Println("Cancelled")
 			})
+
+		case "autocomplete":
+			switch flag.Arg(1) {
+			case "install":
+				dir := filepath.Join(timelog.HomeDir(), ".config", "timelog")
+				os.MkdirAll(dir, os.ModePerm)
+				ioutil.WriteFile(filepath.Join(dir, "autocomplete.sh"), []byte(cli.BashFzfScript), os.ModePerm)
+				fmt.Println("source ~/.config/timelog/autocomplete.sh")
+
+			case "bash.script":
+				fmt.Println(cli.BashFzfScript)
+
+			case "commands":
+				fmt.Println("start")
+				fmt.Println("stop")
+				fmt.Println("adjust")
+				fmt.Println("qlist")
+				fmt.Println("clear")
+				fmt.Println("version")
+
+			case "qlist":
+				for _, s := range app.service.Quicklist() {
+					fmt.Println(s)
+				}
+			}
+
+		case "qlist":
+			for _, s := range app.service.Quicklist() {
+				fmt.Println(s)
+			}
 
 		case "adjust":
 			app.service.RunAdjustService()

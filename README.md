@@ -2,8 +2,13 @@
 
 Time logging in CLI.
 
-## Usage
+## Install autocompleter (bash + fzf using complete)
 
+```
+timelog autocomplete install >> ~/.bash_profile
+```
+
+## Usage
 
 ### Print current timelog
 

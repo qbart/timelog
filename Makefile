@@ -9,11 +9,14 @@ start:
 stop:
 	go run main.go -- stop
 
-export:
-	go run main.go -- export
+clear:
+	go run main.go -- clear
 
 adjust:
 	go run main.go -- adjust
+
+qlist:
+	go run main.go -- qlist
 
 version:
 	go run main.go -- version
