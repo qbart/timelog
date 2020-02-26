@@ -3,9 +3,6 @@ package ui
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/qbart/timelog/cli"
@@ -49,13 +46,7 @@ func (app *ConsoleApp) Run() {
 		case "autocomplete":
 			switch flag.Arg(1) {
 			case "install":
-				dir := filepath.Join(timelog.HomeDir(), ".config", "timelog")
-				os.MkdirAll(dir, os.ModePerm)
-				ioutil.WriteFile(filepath.Join(dir, "autocomplete.sh"), []byte(cli.BashFzfScript), os.ModePerm)
-				fmt.Println("source ~/.config/timelog/autocomplete.sh")
-
-			case "bash.script":
-				fmt.Println(cli.BashFzfScript)
+				app.service.InstallAutocomplete()
 
 			case "commands":
 				fmt.Println("start")

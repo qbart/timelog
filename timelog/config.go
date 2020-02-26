@@ -1,7 +1,7 @@
 package timelog
 
 import (
-	"os"
+	"fmt"
 	"path/filepath"
 )
 
@@ -23,36 +23,25 @@ func NewConfig(dir string) *Config {
 
 // Init initialize config and data files.
 func (c *Config) init() {
-	touchFile(c.ConfigPath())
-	touchFile(c.DataPath())
+	if err := mkdir(c.Dir); err != nil {
+		panic(fmt.Sprintf("Failed to initialize dir: %s", c.Dir))
+	}
+
+	if err := touchFile(c.ConfigPath()); err != nil {
+		panic(fmt.Sprintf("Failed to touch file: %s", c.ConfigPath()))
+	}
+
+	if err := touchFile(c.DataPath()); err != nil {
+		panic(fmt.Sprintf("Failed to touch file: %s", c.DataPath()))
+	}
 }
 
 // ConfigPath returns configuration file path.
 func (c *Config) ConfigPath() string {
-	return filepath.Join(
-		c.Dir,
-		string(os.PathSeparator),
-		"timelog.ini",
-	)
+	return filepath.Join(c.Dir, "config.ini")
 }
 
 // DataPath returns data file path.
 func (c *Config) DataPath() string {
-	return filepath.Join(
-		c.Dir,
-		string(os.PathSeparator),
-		".timelog.csv",
-	)
-}
-
-// HomeDir returns user home dir path.
-func HomeDir() string {
-	dir, _ := os.UserHomeDir()
-	return dir
-}
-
-func touchFile(path string) {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		os.Create(path)
-	}
+	return filepath.Join(c.Dir, "data-default.csv")
 }

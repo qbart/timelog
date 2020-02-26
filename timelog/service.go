@@ -2,8 +2,12 @@ package timelog
 
 import (
 	"encoding/csv"
+	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+
+	"github.com/qbart/timelog/cli"
 )
 
 // Service provides timeloggin functionallity and syncs data to files.
@@ -76,6 +80,21 @@ func (s *Service) RunAdjustService() {
 // Quicklist returns qlist entries.
 func (s *Service) Quicklist() []string {
 	return CloneStrings(s.timelogger.config.Quicklist)
+}
+
+// InstallAutocomplete saves sh files to config dir with autcomplete.
+func (s *Service) InstallAutocomplete() {
+	err := WriteTextFile(
+		filepath.Join(s.timelogger.config.Dir),
+		"autocomplete.sh",
+		cli.BashFzfScript,
+	)
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println("source ~/.config/timelog/autocomplete.sh")
+	}
 }
 
 // writeToFile saves entries in UTC format.
