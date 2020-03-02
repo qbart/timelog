@@ -15,7 +15,7 @@ func TestIntegrationService(t *testing.T) {
 
 		now := time.Now()
 		timelogger := NewTimeLogger(config)
-		timelogger.factory = logtimeMockFactory{
+		timelogger.factory = timeMockFactory{
 			now: now,
 		}
 		setupService := NewService(timelogger)
@@ -39,27 +39,19 @@ func TestIntegrationService(t *testing.T) {
 			now.Location(),
 		)
 
-		if assert.Equal(t, len(service.timelogger.entries), 2) {
+		if assert.Equal(t, len(service.timelogger.events), 3) {
 			// 0
-			assert.Equal(t, tl.entries[0].comment, "hello")
-			assert.Equal(t, tl.entries[0].from, logtime{
-				finished: true,
-				t:        expectedTime,
-			})
-			assert.Equal(t, tl.entries[0].to, logtime{
-				finished: true,
-				t:        expectedTime,
-			})
+			assert.Equal(t, tl.events[0].name, "start")
+			assert.Equal(t, tl.events[0].comment, "hello")
+			assert.Equal(t, tl.events[0].at, expectedTime)
 			// 1
-			assert.Equal(t, tl.entries[1].comment, "world")
-			assert.Equal(t, tl.entries[1].from, logtime{
-				finished: true,
-				t:        expectedTime,
-			})
-			assert.Equal(t, tl.entries[1].to, logtime{
-				finished: true,
-				t:        expectedTime,
-			})
+			assert.Equal(t, tl.events[1].name, "start")
+			assert.Equal(t, tl.events[1].comment, "world")
+			assert.Equal(t, tl.events[1].at, expectedTime)
+			// 2
+			assert.Equal(t, tl.events[2].name, "stop")
+			assert.Equal(t, tl.events[2].comment, "")
+			assert.Equal(t, tl.events[2].at, expectedTime)
 		}
 	})
 }

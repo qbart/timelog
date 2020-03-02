@@ -34,7 +34,7 @@ func (s *Service) Load() (bool, error) {
 		return false, err
 	}
 
-	s.timelogger.entries = e
+	s.timelogger.events = e
 	s.timelogger.config.Quicklist = c.Quicklist
 
 	return true, nil
@@ -52,10 +52,9 @@ func (s *Service) Stop() {
 	s.writeToFile()
 }
 
-// Export timelog and sync.
-func (s *Service) Export() {
-	s.timelogger.Stop()
-	s.timelogger.Export()
+// Clear timelog and sync.
+func (s *Service) Clear() {
+	s.timelogger.Clear()
 	s.writeToFile()
 }
 
@@ -107,16 +106,8 @@ func (s *Service) writeToFile() {
 
 	w := csv.NewWriter(f)
 
-	for _, e := range s.timelogger.entries {
-		to := ""
-		if e.to.finished {
-			to = FormatDateTime(e.to.t.UTC())
-		}
-		w.Write([]string{
-			FormatDateTime(e.from.t.UTC()),
-			to,
-			e.comment,
-		})
+	for _, e := range s.timelogger.events {
+		w.Write(e.ToCsvRecord())
 	}
 	w.Flush()
 }
