@@ -20,40 +20,39 @@ func (p *DiffPrinter) Print() {
 func (p *DiffPrinter) String() string {
 	var sb strings.Builder
 
-	// for i, o := range p.timeloggerOriginal.events {
-	// 	m := p.timeloggerModified.events[i]
+	for i, o := range p.timeloggerOriginal.events {
+		m := p.timeloggerModified.events[i]
 
-	// 	fromIsDifferent := m.from.t != o.from.t
-	// 	toIsDifferent := m.to.t != o.to.t
+		isDifferent := m.at != o.at
 
-	// 	appendEntryString := func(
-	// 		sb *strings.Builder,
-	// 		e *entry,
-	// 		ch rune,
-	// 		last bool,
-	// 		fromIsDifferent, toIsDifferent bool,
-	// 	) {
-	// 		sb.WriteRune(ch)
-	// 		sb.WriteString(e.FromDateString())
-	// 		sb.WriteString(" ")
-	// 		sb.WriteString(wrapBrackets(e.FromTimeString(), fromIsDifferent))
-	// 		sb.WriteString(" ")
-	// 		sb.WriteString(wrapBrackets(e.ToTimeString(), toIsDifferent))
-	// 		sb.WriteString(" ")
-	// 		sb.WriteString(e.comment)
-	// 		if !last {
-	// 			sb.WriteString("\n")
-	// 		}
-	// 	}
+		appendEntryString := func(
+			sb *strings.Builder,
+			e *event,
+			ch rune,
+			last bool,
+			fromIsDifferent, toIsDifferent bool,
+		) {
+			// sb.WriteRune(ch)
+			// sb.WriteString(e.FromDateString())
+			// sb.WriteString(" ")
+			// sb.WriteString(wrapBrackets(e.FromTimeString(), fromIsDifferent))
+			// sb.WriteString(" ")
+			// sb.WriteString(wrapBrackets(e.ToTimeString(), toIsDifferent))
+			// sb.WriteString(" ")
+			// sb.WriteString(e.comment)
+			// if !last {
+			// 	sb.WriteString("\n")
+			// }
+		}
 
-	// 	last := i == len(p.timeloggerOriginal.entries)-1
-	// 	if fromIsDifferent || toIsDifferent {
-	// 		appendEntryString(&sb, &o, '-', false, fromIsDifferent, toIsDifferent)
-	// 		appendEntryString(&sb, &m, '+', last, fromIsDifferent, toIsDifferent)
-	// 	} else {
-	// 		appendEntryString(&sb, &m, ' ', last, false, false)
-	// 	}
-	// }
+		last := i == len(p.timeloggerOriginal.events)-1
+		if isDifferent {
+			appendEntryString(&sb, &o, '-', false, isDifferent, isDifferent)
+			appendEntryString(&sb, &m, '+', last, isDifferent, isDifferent)
+		} else {
+			appendEntryString(&sb, &m, ' ', last, false, false)
+		}
+	}
 
 	return sb.String()
 }

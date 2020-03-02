@@ -140,6 +140,62 @@ func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
 	return clone, nil
 }
 
+const (
+	tkDate = iota
+	tkFromTime
+	tkToTime
+	tkComment
+	tkNewLine
+	tkSpace
+	tkEnd
+)
+
+// Token represents timelog single part.
+type Token struct {
+	token int
+	str   string
+}
+
+// Tokenize generate list of tokens of how timelog output can be split.
+func (t *TimeLogger) Tokenize() []Token {
+	tokens := make([]Token, 0, 20)
+	last := len(t.events) - 1
+
+	for i := 0; i <= last; i++ {
+		curr := t.events[i]
+		next := event{
+			name: "",
+		}
+		if i+1 <= last {
+			next = t.events[i+1]
+		}
+		if curr.name == "stop" {
+			continue
+		}
+		tokens = append(tokens, Token{tkDate, curr.DateString()})
+		tokens = append(tokens, Token{tkSpace, " "})
+		tokens = append(tokens, Token{tkFromTime, curr.TimeString()})
+		tokens = append(tokens, Token{tkSpace, " "})
+
+		if next.name == "" {
+			tokens = append(tokens, Token{tkToTime, "...  "})
+		} else {
+			tokens = append(tokens, Token{tkToTime, next.TimeString()})
+		}
+		tokens = append(tokens, Token{tkSpace, " "})
+		tokens = append(tokens, Token{tkComment, curr.comment})
+		tokens = append(tokens, Token{tkNewLine, "\n"})
+	}
+
+	if last >= 0 {
+		tokens[len(tokens)-1] = Token{tkEnd, ""}
+	} else {
+		tokens = append(tokens, Token{tkEnd, ""})
+	}
+
+	return tokens
+}
+
 func minutes(d int) time.Duration {
 	return time.Duration(d * 60_000_000_000)
 }
