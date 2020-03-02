@@ -23,37 +23,10 @@ func (p *TextPrinter) Print() {
 // String returns text representation of timelog.
 func (p *TextPrinter) String() string {
 	var sb strings.Builder
-	entries := []string{}
-	events := p.timelogger.events
-	last := len(p.timelogger.events) - 1
 
-	for i := 0; i <= last; i++ {
-		sb.Reset()
-		curr := events[i]
-		next := event{
-			name: "",
-		}
-		if i+1 <= last {
-			next = events[i+1]
-		}
-		if curr.name == "stop" {
-			continue
-		}
-
-		sb.WriteString(curr.DateString())
-		sb.WriteString(" ")
-		sb.WriteString(curr.TimeString())
-		sb.WriteString(" ")
-		if next.name == "" {
-			sb.WriteString("...  ")
-		} else {
-			sb.WriteString(next.TimeString())
-		}
-		sb.WriteString(" ")
-		sb.WriteString(curr.comment)
-
-		entries = append(entries, sb.String())
+	for _, token := range p.timelogger.Tokenize() {
+		sb.WriteString(token.str)
 	}
 
-	return strings.Join(entries, "\n")
+	return sb.String()
 }

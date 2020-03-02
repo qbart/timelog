@@ -435,3 +435,51 @@ func Test_Timelog_Clear(t *testing.T) {
 // 	assert.Equal(t, clone.entries[1].from.t, makeTime("2020-01-15 22:10")) // same as above
 // 	assert.Equal(t, clone.entries[1].to.t, makeTime("2020-01-15 22:10"))
 // }
+
+func Test_Timelog_Tokenize(t *testing.T) {
+	events := []event{
+		event{
+			name:    "start",
+			comment: "hello",
+			at:      makeTime("2020-01-15 22:00"),
+		},
+		event{
+			name:    "start",
+			comment: "world",
+			at:      makeTime("2020-01-15 22:05"),
+		},
+		event{
+			name:    "stop",
+			comment: "",
+			at:      makeTime("2020-01-15 22:10"),
+		},
+	}
+
+	tl := TimeLogger{events: events}
+
+	result := tl.Tokenize()
+
+	expectedResult := []Token{
+		//
+		Token{tkDate, "2020-01-15"},
+		Token{tkSpace, " "},
+		Token{tkFromTime, "22:00"},
+		Token{tkSpace, " "},
+		Token{tkToTime, "22:05"},
+		Token{tkSpace, " "},
+		Token{tkComment, "hello"},
+		Token{tkNewLine, "\n"},
+		//
+		Token{tkDate, "2020-01-15"},
+		Token{tkSpace, " "},
+		Token{tkFromTime, "22:05"},
+		Token{tkSpace, " "},
+		Token{tkToTime, "22:10"},
+		Token{tkSpace, " "},
+		Token{tkComment, "world"},
+		//
+		Token{tkEnd, ""},
+	}
+
+	assert.Equal(t, expectedResult, result)
+}
