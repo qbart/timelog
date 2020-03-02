@@ -19,38 +19,50 @@ func (p *DiffPrinter) Print() {
 // String returns diff representation of timelog.
 func (p *DiffPrinter) String() string {
 	var sb strings.Builder
+	org := p.timeloggerOriginal.Tokenize()
+	mod := p.timeloggerModified.Tokenize()
 
-	for i, o := range p.timeloggerOriginal.events {
-		m := p.timeloggerModified.events[i]
+	if len(org) == 1 && org[0].token == tkEnd {
+		return ""
+	}
 
-		isDifferent := m.at != o.at
+	diff := false
+	begin := 0
 
-		appendEntryString := func(
-			sb *strings.Builder,
-			e *event,
-			ch rune,
-			last bool,
-			fromIsDifferent, toIsDifferent bool,
-		) {
-			// sb.WriteRune(ch)
-			// sb.WriteString(e.FromDateString())
-			// sb.WriteString(" ")
-			// sb.WriteString(wrapBrackets(e.FromTimeString(), fromIsDifferent))
-			// sb.WriteString(" ")
-			// sb.WriteString(wrapBrackets(e.ToTimeString(), toIsDifferent))
-			// sb.WriteString(" ")
-			// sb.WriteString(e.comment)
-			// if !last {
-			// 	sb.WriteString("\n")
-			// }
+	for i := 0; i < len(org); i++ {
+		o := org[i]
+		m := mod[i]
+		if !o.Equals(m) {
+			diff = true
 		}
 
-		last := i == len(p.timeloggerOriginal.events)-1
-		if isDifferent {
-			appendEntryString(&sb, &o, '-', false, isDifferent, isDifferent)
-			appendEntryString(&sb, &m, '+', last, isDifferent, isDifferent)
-		} else {
-			appendEntryString(&sb, &m, ' ', last, false, false)
+		if o.token == tkDate {
+			diff = false
+			begin = i
+		} else if o.token == tkNewLine || o.token == tkEnd {
+			if diff {
+				sb.WriteRune('-')
+			} else {
+				sb.WriteRune(' ')
+			}
+			for j := begin; j <= i; j++ {
+				sb.WriteString(wrapBrackets(
+					org[j].str,
+					!org[j].Equals(mod[j]),
+				))
+			}
+			if diff {
+				if o.token == tkEnd {
+					sb.WriteString("\n")
+				}
+				sb.WriteRune('+')
+				for j := begin; j <= i; j++ {
+					sb.WriteString(wrapBrackets(
+						mod[j].str,
+						!mod[j].Equals(org[j]),
+					))
+				}
+			}
 		}
 	}
 

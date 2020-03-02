@@ -156,6 +156,11 @@ type Token struct {
 	str   string
 }
 
+// Equals checks if two tokens are identical.
+func (t Token) Equals(other Token) bool {
+	return t.token == other.token && t.str == other.str
+}
+
 // Tokenize generate list of tokens of how timelog output can be split.
 func (t *TimeLogger) Tokenize() []Token {
 	tokens := make([]Token, 0, 20)
