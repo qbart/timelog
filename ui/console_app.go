@@ -37,7 +37,7 @@ func (app *ConsoleApp) Run() {
 		case "clear":
 			app.print()
 			cli.AreYouSure("Are you sure to clear all data?", func() {
-				app.service.Export()
+				app.service.Clear()
 				fmt.Println("Done")
 			}, func() {
 				fmt.Println("Cancelled")

@@ -13,7 +13,7 @@ type AdjustService struct {
 
 // Run handles the service logic.
 func (p *AdjustService) Run(success func()) {
-	if len(p.timelogger.entries) == 0 {
+	if len(p.timelogger.events) == 0 {
 		fmt.Println("Nothing to adjust")
 		return
 	}

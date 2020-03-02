@@ -12,7 +12,7 @@ func loadConfig(path string) (*Config, error) {
 	return Parse(configBytes)
 }
 
-func loadData(path string) ([]entry, error) {
+func loadData(path string) ([]event, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		log.Fatal(err)
@@ -21,29 +21,17 @@ func loadData(path string) ([]entry, error) {
 	r := csv.NewReader(f)
 	rows, _ := r.ReadAll()
 
-	e := make([]entry, 0, 20)
+	e := make([]event, 0, 20)
 
 	for _, row := range rows {
-		fromLogtime := logtimeDefaultFactory{}.NewLogTime(true)
-		from, err := ParseDateTime(row[0])
+		at, err := ParseDateTime(row[0])
 		if err != nil {
 			return e, err
 		}
-		fromLogtime.t = ToLocal(from)
-
-		toLogtime := logtimeDefaultFactory{}.NewLogTime(true)
-		to, err := ParseDateTime(row[1])
-		if row[1] == "" {
-			toLogtime.finished = false
-		} else if err != nil {
-			return e, err
-		} else {
-			toLogtime.t = ToLocal(to)
-		}
-
-		e = append(e, entry{
-			from:    fromLogtime,
-			to:      toLogtime,
+		at = ToLocal(at)
+		e = append(e, event{
+			name:    row[1],
+			at:      at,
 			comment: row[2],
 		})
 	}
