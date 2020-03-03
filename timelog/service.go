@@ -59,7 +59,7 @@ func (s *Service) Clear() {
 }
 
 // Adjust timelog.
-func (s *Service) Adjust(adjustments map[int]int) (*TimeLogger, error) {
+func (s *Service) Adjust(adjustments map[int]int) *TimeLogger {
 	return s.timelogger.Adjust(adjustments)
 }
 
