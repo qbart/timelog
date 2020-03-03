@@ -68,7 +68,7 @@ func (t *TimeLogger) Clear() {
 }
 
 // Adjust takes adjustments map and applies time modifications based on provided values in minutes.
-func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
+func (t *TimeLogger) Adjust(adjustments map[int]int) *TimeLogger {
 	const notChanged = -1
 
 	clone := &TimeLogger{
@@ -76,68 +76,40 @@ func (t *TimeLogger) Adjust(adjustments map[int]int) (*TimeLogger, error) {
 		events:  make([]event, len(t.events)),
 		factory: t.factory,
 	}
-	// copy(clone.entries, t.entries)
+	copy(clone.events, t.events)
+	n := len(clone.events)
 
-	// n := len(clone.entries)
-	// if n == 0 {
-	// 	return clone, nil
-	// }
+	// apply adjustments
+	for i := 0; i < n; i++ {
+		d := adjustments[i]
+		if d != 0 {
+			clone.events[i].at = clone.events[i].at.Add(minutes(d))
+		}
+	}
 
-	// for i := 0; i <= n; i++ {
-	// 	d := adjustments[i]
-	// 	if d != 0 {
-	// 		from := notChanged
-	// 		to := notChanged
-	// 		if i == 0 {
-	// 			from = 0
-	// 		} else if i == n {
-	// 			to = i - 1
-	// 			if !clone.entries[to].to.finished {
-	// 				to = notChanged
-	// 			}
-	// 		} else {
-	// 			to = i - 1
-	// 			from = i
-	// 		}
+	// keep adjustments within allowed range
+	for i := 0; i < n; i++ {
+		d := adjustments[i]
+		if d != 0 {
+			prevDate := clone.events[i].at.Add(-minutes(60 * 24 * 7))
+			nextDate := time.Now()
+			if i-1 >= 0 {
+				prevDate = clone.events[i-1].at
+			}
+			if i+1 < n {
+				nextDate = clone.events[i+1].at
+			}
 
-	// 		if from != notChanged {
-	// 			clone.entries[from].from.t = clone.entries[from].from.t.Add(minutes(d))
-	// 		}
+			if clone.events[i].at.Before(prevDate) {
+				clone.events[i].at = prevDate
+			}
+			if clone.events[i].at.After(nextDate) {
+				clone.events[i].at = nextDate
+			}
+		}
+	}
 
-	// 		if to != notChanged {
-	// 			clone.entries[to].to.t = clone.entries[to].to.t.Add(minutes(d))
-	// 		}
-	// 	}
-	// }
-
-	// for i := 0; i <= n; i++ {
-	// 	d := adjustments[i]
-	// 	if d != 0 {
-	// 		// A,[from,to],A,[from,to],A
-	// 		p1 := i*3 - 1
-	// 		n1 := i*3 + 1
-
-	// 		if d < 0 {
-	// 			if p1 >= 0 {
-	// 				if clone.entries[p1/3].to.t.Before(clone.entries[p1/3].from.t) {
-	// 					t := clone.entries[p1/3].from.t
-	// 					clone.entries[p1/3].to.t = t
-	// 					clone.entries[n1/3].from.t = t
-	// 				}
-	// 			}
-	// 		} else {
-	// 			if n1/3 < n {
-	// 				if clone.entries[n1/3].from.t.After(clone.entries[n1/3].to.t) {
-	// 					t := clone.entries[n1/3].to.t
-	// 					clone.entries[n1/3].from.t = t
-	// 					clone.entries[p1/3].to.t = t
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	return clone, nil
+	return clone
 }
 
 const (
