@@ -106,7 +106,47 @@ func Test_AdjustPrinter_String_SelectionLast(t *testing.T) {
 }
 
 func Test_AdjustPrinter_String_SelectionWithMultipleStops(t *testing.T) {
-	assert.Equal(t, true, false)
+	events := []event{
+		event{
+			name:    "start",
+			comment: "hello",
+			at:      makeTime("2020-01-15 22:00"),
+		},
+		event{
+			name:    "start",
+			comment: "world",
+			at:      makeTime("2020-01-15 22:05"),
+		},
+		event{
+			name:    "stop",
+			comment: "",
+			at:      makeTime("2020-01-15 22:10"),
+		},
+		event{
+			name:    "start",
+			comment: "xd",
+			at:      makeTime("2020-01-15 23:05"),
+		},
+		event{
+			name:    "stop",
+			comment: "",
+			at:      makeTime("2020-01-15 23:10"),
+		},
+	}
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{events: events},
+		selected:   3,
+	}
+
+	result := p.String()
+
+	expectedResult := fmt.Sprint(
+		"2020-01-15  22:00  22:05  hello\n",
+		"2020-01-15  22:05  22:10  world\n",
+		"2020-01-15 [[23:05]](fg:yellow,bg:black) 23:10  xd",
+	)
+
+	assert.Equal(t, expectedResult, result)
 }
 
 func Test_AdjustPrinter_String_Empty(t *testing.T) {
