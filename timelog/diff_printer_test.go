@@ -40,12 +40,12 @@ func Test_DiffPrinter_String_WithoutStop(t *testing.T) {
 
 	result := p.String()
 
-	expectedResult := trimHeredoc(`
-	-2020-01-15 [22:00] [22:05] hello
-	+2020-01-15 [21:59] [22:10] hello
-	-2020-01-15 [22:05] ...   world
-	+2020-01-15 [22:10] ...   world
-	`)
+	expectedResult := fmt.Sprint(
+		"-2020-01-15 [22:00] [22:05] hello\n",
+		"+           [21:59] [22:10]      \n",
+		"-2020-01-15 [22:05] ...   world\n",
+		"+           [22:10]            ",
+	)
 
 	assert.Equal(t, expectedResult, result)
 }
@@ -83,10 +83,10 @@ func Test_DiffPrinter_String_WithStop(t *testing.T) {
 
 	result := p.String()
 
-	expectedResult := trimHeredoc(`
-	-2020-01-15 [22:00] [22:05] hello
-	+2020-01-15 [21:59] [22:10] hello
-	`)
+	expectedResult := fmt.Sprint(
+		"-2020-01-15 [22:00] [22:05] hello\n",
+		"+           [21:59] [22:10]      ",
+	)
 
 	assert.Equal(t, expectedResult, result)
 }

@@ -38,6 +38,7 @@ func (timeDefaultFactory) New() time.Time {
 
 // Start appends new time log entry closing last unclosed entry.
 func (t *TimeLogger) Start(comment string) {
+	// todo: uuid
 	evt := event{
 		name:    "start",
 		at:      t.factory.New(),
@@ -124,8 +125,9 @@ const (
 
 // Token represents timelog single part.
 type Token struct {
-	token int
-	str   string
+	token      int
+	str        string
+	eventIndex int
 }
 
 // Equals checks if two tokens are identical.
@@ -149,25 +151,25 @@ func (t *TimeLogger) Tokenize() []Token {
 		if curr.name == "stop" {
 			continue
 		}
-		tokens = append(tokens, Token{tkDate, curr.DateString()})
-		tokens = append(tokens, Token{tkSpace, " "})
-		tokens = append(tokens, Token{tkFromTime, curr.TimeString()})
-		tokens = append(tokens, Token{tkSpace, " "})
+		tokens = append(tokens, Token{tkDate, curr.DateString(), -1})
+		tokens = append(tokens, Token{tkSpace, " ", -1})
+		tokens = append(tokens, Token{tkFromTime, curr.TimeString(), i})
+		tokens = append(tokens, Token{tkSpace, " ", -1})
 
 		if next.name == "" {
-			tokens = append(tokens, Token{tkToTime, "...  "})
+			tokens = append(tokens, Token{tkToTime, "...  ", -1})
 		} else {
-			tokens = append(tokens, Token{tkToTime, next.TimeString()})
+			tokens = append(tokens, Token{tkToTime, next.TimeString(), i + 1})
 		}
-		tokens = append(tokens, Token{tkSpace, " "})
-		tokens = append(tokens, Token{tkComment, curr.comment})
-		tokens = append(tokens, Token{tkNewLine, "\n"})
+		tokens = append(tokens, Token{tkSpace, " ", -1})
+		tokens = append(tokens, Token{tkComment, curr.comment, -1})
+		tokens = append(tokens, Token{tkNewLine, "\n", -1})
 	}
 
 	if last >= 0 {
-		tokens[len(tokens)-1] = Token{tkEnd, ""}
+		tokens[len(tokens)-1] = Token{tkEnd, "", -1}
 	} else {
-		tokens = append(tokens, Token{tkEnd, ""})
+		tokens = append(tokens, Token{tkEnd, "", -1})
 	}
 
 	return tokens

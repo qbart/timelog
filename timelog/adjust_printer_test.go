@@ -1,138 +1,122 @@
 package timelog
 
-// import (
-// 	"testing"
+import (
+	"fmt"
+	"testing"
 
-// 	"github.com/stretchr/testify/assert"
-// )
+	"github.com/stretchr/testify/assert"
+)
 
-// func Test_AdjustPrinter_String_DefaultSelection(t *testing.T) {
-// 	entries := []entry{
-// 		entry{
-// 			comment: "hello",
-// 			from: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:00"),
-// 			},
-// 			to: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:05"),
-// 			},
-// 		},
-// 		entry{
-// 			comment: "world",
-// 			from: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:05"),
-// 			},
-// 			to: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:10"),
-// 			},
-// 		},
-// 	}
-// 	p := AdjustPrinter{
-// 		timelogger: &TimeLogger{entries: entries},
-// 	}
+func Test_AdjustPrinter_String_DefaultSelection(t *testing.T) {
+	events := []event{
+		event{
+			name:    "start",
+			comment: "hello",
+			at:      makeTime("2020-01-15 22:00"),
+		},
+		event{
+			name:    "start",
+			comment: "world",
+			at:      makeTime("2020-01-15 22:05"),
+		},
+		event{
+			name:    "stop",
+			comment: "",
+			at:      makeTime("2020-01-15 22:10"),
+		},
+	}
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{events: events},
+	}
 
-// 	result := p.String()
+	result := p.String()
 
-// 	expectedResult := trimHeredoc(`
-// 		2020-01-15 [[22:00]](fg:yellow,bg:black) 22:05  hello
-// 		2020-01-15  22:05  22:10  world
-// 	`)
+	expectedResult := fmt.Sprint(
+		"2020-01-15 [[22:00]](fg:yellow,bg:black) 22:05  hello\n",
+		"2020-01-15  22:05  22:10  world",
+	)
 
-// 	assert.Equal(t, expectedResult, result)
-// }
+	assert.Equal(t, expectedResult, result)
+}
 
-// func Test_AdjustPrinter_String_SelectionBetween(t *testing.T) {
-// 	entries := []entry{
-// 		entry{
-// 			comment: "hello",
-// 			from: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:00"),
-// 			},
-// 			to: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:05"),
-// 			},
-// 		},
-// 		entry{
-// 			comment: "world",
-// 			from: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:05"),
-// 			},
-// 			to: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:10"),
-// 			},
-// 		},
-// 	}
-// 	p := AdjustPrinter{
-// 		timelogger: &TimeLogger{entries: entries},
-// 		selected:   1,
-// 	}
+func Test_AdjustPrinter_String_SelectionBetween(t *testing.T) {
+	events := []event{
+		event{
+			name:    "start",
+			comment: "hello",
+			at:      makeTime("2020-01-15 22:00"),
+		},
+		event{
+			name:    "start",
+			comment: "world",
+			at:      makeTime("2020-01-15 22:05"),
+		},
+		event{
+			name:    "stop",
+			comment: "",
+			at:      makeTime("2020-01-15 22:10"),
+		},
+	}
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{events: events},
+		selected:   1,
+	}
 
-// 	result := p.String()
+	result := p.String()
 
-// 	expectedResult := trimHeredoc(`
-// 		2020-01-15  22:00 [[22:05]](fg:yellow,bg:black) hello
-// 		2020-01-15 [[22:05]](fg:yellow,bg:black) 22:10  world
-// 	`)
+	expectedResult := fmt.Sprint(
+		"2020-01-15  22:00 [[22:05]](fg:yellow,bg:black) hello\n",
+		"2020-01-15 [[22:05]](fg:yellow,bg:black) 22:10  world",
+	)
 
-// 	assert.Equal(t, expectedResult, result)
-// }
+	assert.Equal(t, expectedResult, result)
+}
 
-// func Test_AdjustPrinter_String_SelectionLast(t *testing.T) {
-// 	entries := []entry{
-// 		entry{
-// 			comment: "hello",
-// 			from: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:00"),
-// 			},
-// 			to: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:05"),
-// 			},
-// 		},
-// 		entry{
-// 			comment: "world",
-// 			from: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:05"),
-// 			},
-// 			to: logtime{
-// 				finished: true,
-// 				t:        makeTime("2020-01-15 22:10"),
-// 			},
-// 		},
-// 	}
-// 	p := AdjustPrinter{
-// 		timelogger: &TimeLogger{entries: entries},
-// 		selected:   2,
-// 	}
+func Test_AdjustPrinter_String_SelectionLast(t *testing.T) {
+	events := []event{
+		event{
+			name:    "start",
+			comment: "hello",
+			at:      makeTime("2020-01-15 22:00"),
+		},
+		event{
+			name:    "start",
+			comment: "world",
+			at:      makeTime("2020-01-15 22:05"),
+		},
+		event{
+			name:    "stop",
+			comment: "",
+			at:      makeTime("2020-01-15 22:10"),
+		},
+	}
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{events: events},
+		selected:   2,
+	}
 
-// 	result := p.String()
+	result := p.String()
 
-// 	expectedResult := trimHeredoc(`
-// 		2020-01-15  22:00  22:05  hello
-// 		2020-01-15  22:05 [[22:10]](fg:yellow,bg:black) world
-// 	`)
+	expectedResult := fmt.Sprint(
+		"2020-01-15  22:00  22:05  hello\n",
+		"2020-01-15  22:05 [[22:10]](fg:yellow,bg:black) world",
+	)
 
-// 	assert.Equal(t, expectedResult, result)
-// }
+	assert.Equal(t, expectedResult, result)
+}
 
-// func Test_AdjustPrinter_String_Empty(t *testing.T) {
-// 	p := AdjustPrinter{
-// 		timelogger: &TimeLogger{entries: []entry{}},
-// 	}
+func Test_AdjustPrinter_String_SelectionWithMultipleStops(t *testing.T) {
+	assert.Equal(t, true, false)
+}
 
-// 	result := p.String()
+func Test_AdjustPrinter_String_Empty(t *testing.T) {
+	p := AdjustPrinter{
+		timelogger: &TimeLogger{events: []event{}},
+	}
 
-// 	expectedResult := ""
+	result := p.String()
 
-// 	assert.Equal(t, expectedResult, result)
-// }
+	expectedResult := ""
+
+	assert.Equal(t, expectedResult, result)
+}

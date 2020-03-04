@@ -293,24 +293,24 @@ func Test_Timelog_Tokenize(t *testing.T) {
 
 	expectedResult := []Token{
 		//
-		Token{tkDate, "2020-01-15"},
-		Token{tkSpace, " "},
-		Token{tkFromTime, "22:00"},
-		Token{tkSpace, " "},
-		Token{tkToTime, "22:05"},
-		Token{tkSpace, " "},
-		Token{tkComment, "hello"},
-		Token{tkNewLine, "\n"},
+		Token{tkDate, "2020-01-15", -1},
+		Token{tkSpace, " ", -1},
+		Token{tkFromTime, "22:00", 0},
+		Token{tkSpace, " ", -1},
+		Token{tkToTime, "22:05", 1},
+		Token{tkSpace, " ", -1},
+		Token{tkComment, "hello", -1},
+		Token{tkNewLine, "\n", -1},
 		//
-		Token{tkDate, "2020-01-15"},
-		Token{tkSpace, " "},
-		Token{tkFromTime, "22:05"},
-		Token{tkSpace, " "},
-		Token{tkToTime, "22:10"},
-		Token{tkSpace, " "},
-		Token{tkComment, "world"},
+		Token{tkDate, "2020-01-15", -1},
+		Token{tkSpace, " ", -1},
+		Token{tkFromTime, "22:05", 1},
+		Token{tkSpace, " ", -1},
+		Token{tkToTime, "22:10", 2},
+		Token{tkSpace, " ", -1},
+		Token{tkComment, "world", -1},
 		//
-		Token{tkEnd, ""},
+		Token{tkEnd, "", -1},
 	}
 
 	assert.Equal(t, expectedResult, result)

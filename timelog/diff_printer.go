@@ -22,6 +22,7 @@ func (p *DiffPrinter) String() string {
 	org := p.timeloggerOriginal.Tokenize()
 	mod := p.timeloggerModified.Tokenize()
 
+	//todo: simplify
 	if len(org) == 1 && org[0].token == tkEnd {
 		return ""
 	}
@@ -57,10 +58,24 @@ func (p *DiffPrinter) String() string {
 				}
 				sb.WriteRune('+')
 				for j := begin; j <= i; j++ {
-					sb.WriteString(wrapBrackets(
-						mod[j].str,
-						!mod[j].Equals(org[j]),
-					))
+					modded := !mod[j].Equals(org[j])
+					if modded {
+						sb.WriteString(wrapBrackets(
+							mod[j].str,
+							true,
+						))
+
+					} else {
+						switch mod[j].token {
+						case tkNewLine:
+							sb.WriteString(mod[j].str)
+						case tkEnd:
+							// nothing
+						default:
+							sb.WriteString(strings.Repeat(" ", len(mod[j].str)))
+						}
+
+					}
 				}
 			}
 		}
