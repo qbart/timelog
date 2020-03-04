@@ -91,7 +91,7 @@ func Test_TextPrinter_String_SplitDaysWithStop(t *testing.T) {
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-16 11:05"),
+			at:      makeTime("2020-01-16 01:05"),
 		},
 	}
 
