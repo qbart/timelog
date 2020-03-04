@@ -142,15 +142,18 @@ func (t *TimeLogger) Tokenize() []Token {
 
 	for i := 0; i <= last; i++ {
 		curr := t.events[i]
+		if curr.name == "stop" {
+			continue
+		}
+
 		next := event{
 			name: "",
 		}
 		if i+1 <= last {
 			next = t.events[i+1]
 		}
-		if curr.name == "stop" {
-			continue
-		}
+
+		//todo: emit tokens for split day
 		tokens = append(tokens, Token{tkDate, curr.DateString(), -1})
 		tokens = append(tokens, Token{tkSpace, " ", -1})
 		tokens = append(tokens, Token{tkFromTime, curr.TimeString(), i})
