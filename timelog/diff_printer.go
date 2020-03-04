@@ -19,8 +19,8 @@ func (p *DiffPrinter) Print() {
 // String returns diff representation of timelog.
 func (p *DiffPrinter) String() string {
 	var sb strings.Builder
-	org := p.timeloggerOriginal.Tokenize()
-	mod := p.timeloggerModified.Tokenize()
+	org := p.timeloggerOriginal.Tokenize(false)
+	mod := p.timeloggerModified.Tokenize(false)
 
 	//todo: simplify
 	if len(org) == 1 && org[0].token == tkEnd {

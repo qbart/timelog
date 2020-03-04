@@ -136,7 +136,7 @@ func (t Token) Equals(other Token) bool {
 }
 
 // Tokenize generate list of tokens of how timelog output can be split.
-func (t *TimeLogger) Tokenize() []Token {
+func (t *TimeLogger) Tokenize(split bool) []Token {
 	tokens := make([]Token, 0, 20)
 	last := len(t.events) - 1
 
@@ -148,25 +148,46 @@ func (t *TimeLogger) Tokenize() []Token {
 
 		next := event{
 			name: "",
+			at:   time.Now(),
 		}
 		if i+1 <= last {
 			next = t.events[i+1]
 		}
 
-		//todo: emit tokens for split day
-		tokens = append(tokens, Token{tkDate, curr.DateString(), -1})
-		tokens = append(tokens, Token{tkSpace, " ", -1})
-		tokens = append(tokens, Token{tkFromTime, curr.TimeString(), i})
-		tokens = append(tokens, Token{tkSpace, " ", -1})
-
-		if next.name == "" {
-			tokens = append(tokens, Token{tkToTime, "...  ", -1})
-		} else {
+		crossDaySplit := split && next.name != "" && next.at.Day() != curr.at.Day()
+		if crossDaySplit {
+			tokens = append(tokens, Token{tkDate, curr.DateString(), -1})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			tokens = append(tokens, Token{tkFromTime, curr.TimeString(), i})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			tokens = append(tokens, Token{tkToTime, "23:59", -1})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			tokens = append(tokens, Token{tkComment, curr.comment, -1})
+			tokens = append(tokens, Token{tkNewLine, "\n", -1})
+			//
+			tokens = append(tokens, Token{tkDate, next.DateString(), -1})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			tokens = append(tokens, Token{tkFromTime, "00:00", -1})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
 			tokens = append(tokens, Token{tkToTime, next.TimeString(), i + 1})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			tokens = append(tokens, Token{tkComment, curr.comment, -1})
+			tokens = append(tokens, Token{tkNewLine, "\n", -1})
+
+		} else {
+			tokens = append(tokens, Token{tkDate, curr.DateString(), -1})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			tokens = append(tokens, Token{tkFromTime, curr.TimeString(), i})
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			if next.name == "" {
+				tokens = append(tokens, Token{tkToTime, "...  ", -1})
+			} else {
+				tokens = append(tokens, Token{tkToTime, next.TimeString(), i + 1})
+			}
+			tokens = append(tokens, Token{tkSpace, " ", -1})
+			tokens = append(tokens, Token{tkComment, curr.comment, -1})
+			tokens = append(tokens, Token{tkNewLine, "\n", -1})
 		}
-		tokens = append(tokens, Token{tkSpace, " ", -1})
-		tokens = append(tokens, Token{tkComment, curr.comment, -1})
-		tokens = append(tokens, Token{tkNewLine, "\n", -1})
 	}
 
 	if last >= 0 {

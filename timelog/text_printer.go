@@ -24,7 +24,7 @@ func (p *TextPrinter) Print() {
 func (p *TextPrinter) String() string {
 	var sb strings.Builder
 
-	for _, token := range p.timelogger.Tokenize() {
+	for _, token := range p.timelogger.Tokenize(true) {
 		sb.WriteString(token.str)
 	}
 

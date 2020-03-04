@@ -87,7 +87,7 @@ func (p *AdjustPrinter) Print() {
 // String returns text representation of timelog.
 func (p AdjustPrinter) String() string {
 	var sb strings.Builder
-	tokens := p.timelogger.Tokenize()
+	tokens := p.timelogger.Tokenize(false)
 
 	begin := 0
 	for i := 0; i < len(tokens); i++ {
