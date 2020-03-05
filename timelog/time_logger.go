@@ -2,46 +2,54 @@ package timelog
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // TimeLogger data.
 type TimeLogger struct {
 	config  *Config
 	events  []event
-	factory timeFactory
+	factory timelogFactory
 }
 
 type event struct {
+	uuid    uuid.UUID
 	name    string
 	at      time.Time
 	comment string
 }
 
-type timeFactory interface {
-	New() time.Time
+type timelogFactory interface {
+	NewTime() time.Time
+	NewUUID() uuid.UUID
 }
 
-type timeDefaultFactory struct{}
+type timelogDefaultFactory struct{}
 
 // NewTimeLogger creates new time logger.
 func NewTimeLogger(c *Config) *TimeLogger {
 	return &TimeLogger{
 		config:  c,
 		events:  make([]event, 0),
-		factory: timeDefaultFactory{},
+		factory: timelogDefaultFactory{},
 	}
 }
 
-func (timeDefaultFactory) New() time.Time {
+func (timelogDefaultFactory) NewTime() time.Time {
 	return time.Now()
+}
+
+func (timelogDefaultFactory) NewUUID() uuid.UUID {
+	return uuid.New()
 }
 
 // Start appends new time log entry closing last unclosed entry.
 func (t *TimeLogger) Start(comment string) {
-	// todo: uuid
 	evt := event{
+		uuid:    t.factory.NewUUID(),
 		name:    "start",
-		at:      t.factory.New(),
+		at:      t.factory.NewTime(),
 		comment: comment,
 	}
 	t.events = append(t.events, evt)
@@ -50,8 +58,9 @@ func (t *TimeLogger) Start(comment string) {
 // Stop closes existing unfinished entry.
 func (t *TimeLogger) Stop() {
 	evt := event{
+		uuid:    t.factory.NewUUID(),
 		name:    "stop",
-		at:      t.factory.New(),
+		at:      t.factory.NewTime(),
 		comment: "",
 	}
 
@@ -213,6 +222,7 @@ func (e event) TimeString() string {
 
 func (e event) ToCsvRecord() []string {
 	return []string{
+		e.uuid.String(),
 		FormatDateTime(e.at.UTC()),
 		e.name,
 		e.comment,

@@ -11,12 +11,12 @@ func TestAdjust_Adjust_ValidClone(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 	}
 
@@ -32,17 +32,17 @@ func TestAdjust_DurationDoesNotCrossOver(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 22:10"),
+			at:      _time("2020-01-15 22:10"),
 		},
 	}
 
@@ -54,14 +54,14 @@ func TestAdjust_DurationDoesNotCrossOver(t *testing.T) {
 	})
 
 	// original events are not modified
-	assert.Equal(t, tl.events[0].at, makeTime("2020-01-15 22:00"))
-	assert.Equal(t, tl.events[1].at, makeTime("2020-01-15 22:05"))
-	assert.Equal(t, tl.events[2].at, makeTime("2020-01-15 22:10"))
+	assert.Equal(t, tl.events[0].at, _time("2020-01-15 22:00"))
+	assert.Equal(t, tl.events[1].at, _time("2020-01-15 22:05"))
+	assert.Equal(t, tl.events[2].at, _time("2020-01-15 22:10"))
 
 	// cloned objects contains modified events
-	assert.Equal(t, clone.events[0].at, makeTime("2020-01-15 21:57"))
-	assert.Equal(t, clone.events[1].at, makeTime("2020-01-15 21:59"))
-	assert.Equal(t, clone.events[2].at, makeTime("2020-01-15 22:15"))
+	assert.Equal(t, clone.events[0].at, _time("2020-01-15 21:57"))
+	assert.Equal(t, clone.events[1].at, _time("2020-01-15 21:59"))
+	assert.Equal(t, clone.events[2].at, _time("2020-01-15 22:15"))
 }
 
 func TestAdjust_DurationNegativeCrossOver(t *testing.T) {
@@ -69,17 +69,17 @@ func TestAdjust_DurationNegativeCrossOver(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 22:10"),
+			at:      _time("2020-01-15 22:10"),
 		},
 	}
 
@@ -89,9 +89,9 @@ func TestAdjust_DurationNegativeCrossOver(t *testing.T) {
 	})
 
 	// cloned objects contains modified events
-	assert.Equal(t, clone.events[0].at, makeTime("2020-01-15 22:00"))
-	assert.Equal(t, clone.events[1].at, makeTime("2020-01-15 22:00")) // -6m -> 22:00 (can't go lower than previous)
-	assert.Equal(t, clone.events[2].at, makeTime("2020-01-15 22:10"))
+	assert.Equal(t, clone.events[0].at, _time("2020-01-15 22:00"))
+	assert.Equal(t, clone.events[1].at, _time("2020-01-15 22:00")) // -6m -> 22:00 (can't go lower than previous)
+	assert.Equal(t, clone.events[2].at, _time("2020-01-15 22:10"))
 }
 
 func TestAdjust_DurationPositiveCrossOver(t *testing.T) {
@@ -99,17 +99,17 @@ func TestAdjust_DurationPositiveCrossOver(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 22:10"),
+			at:      _time("2020-01-15 22:10"),
 		},
 	}
 
@@ -119,7 +119,7 @@ func TestAdjust_DurationPositiveCrossOver(t *testing.T) {
 	})
 
 	// cloned objects contains modified events
-	assert.Equal(t, clone.events[0].at, makeTime("2020-01-15 22:00"))
-	assert.Equal(t, clone.events[1].at, makeTime("2020-01-15 22:10")) // +6m -> 22:10 (can't go higher than next)
-	assert.Equal(t, clone.events[2].at, makeTime("2020-01-15 22:10"))
+	assert.Equal(t, clone.events[0].at, _time("2020-01-15 22:00"))
+	assert.Equal(t, clone.events[1].at, _time("2020-01-15 22:10")) // +6m -> 22:10 (can't go higher than next)
+	assert.Equal(t, clone.events[2].at, _time("2020-01-15 22:10"))
 }

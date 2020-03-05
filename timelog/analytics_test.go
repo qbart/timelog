@@ -11,17 +11,17 @@ func TestCalcAnalytics(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:01"),
+			at:      _time("2020-01-15 22:01"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 23:16"),
+			at:      _time("2020-01-15 23:16"),
 		},
 	}
 	analytics := calcAnalytics(ee)

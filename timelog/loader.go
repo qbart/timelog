@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+
+	"github.com/google/uuid"
 )
 
 func loadConfig(path string) (*Config, error) {
@@ -24,15 +26,16 @@ func loadData(path string) ([]event, error) {
 	e := make([]event, 0, 20)
 
 	for _, row := range rows {
-		at, err := ParseDateTime(row[0])
+		at, err := ParseDateTime(row[1])
 		if err != nil {
 			return e, err
 		}
 		at = ToLocal(at)
 		e = append(e, event{
-			name:    row[1],
+			uuid:    uuid.MustParse(row[0]),
+			name:    row[2],
 			at:      at,
-			comment: row[2],
+			comment: row[3],
 		})
 	}
 

@@ -11,17 +11,17 @@ func Test_Timelog_TokenizeSplitFalse(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 22:10"),
+			at:      _time("2020-01-15 22:10"),
 		},
 	}
 
@@ -59,17 +59,17 @@ func Test_Timelog_TokenizeSplitTrue(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 23:00"),
+			at:      _time("2020-01-15 23:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-16 01:00"),
+			at:      _time("2020-01-16 01:00"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-16 02:00"),
+			at:      _time("2020-01-16 02:00"),
 		},
 	}
 
