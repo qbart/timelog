@@ -26,16 +26,17 @@ func loadData(path string) ([]event, error) {
 	e := make([]event, 0, 20)
 
 	for _, row := range rows {
-		at, err := ParseDateTime(row[1])
+		at, err := ParseDateTime(row[2])
 		if err != nil {
 			return e, err
 		}
 		at = ToLocal(at)
 		e = append(e, event{
-			uuid:    uuid.MustParse(row[0]),
-			name:    row[2],
-			at:      at,
-			comment: row[3],
+			workspace: row[0],
+			uuid:      uuid.MustParse(row[1]),
+			name:      row[3],
+			at:        at,
+			comment:   row[4],
 		})
 	}
 

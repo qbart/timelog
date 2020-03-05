@@ -14,10 +14,11 @@ type TimeLogger struct {
 }
 
 type event struct {
-	uuid    uuid.UUID
-	name    string
-	at      time.Time
-	comment string
+	workspace string
+	uuid      uuid.UUID
+	name      string
+	at        time.Time
+	comment   string
 }
 
 type timelogFactory interface {
@@ -47,10 +48,11 @@ func (timelogDefaultFactory) NewUUID() uuid.UUID {
 // Start appends new time log entry closing last unclosed entry.
 func (t *TimeLogger) Start(comment string) {
 	evt := event{
-		uuid:    t.factory.NewUUID(),
-		name:    "start",
-		at:      t.factory.NewTime(),
-		comment: comment,
+		workspace: "default", //todo: add context in future
+		uuid:      t.factory.NewUUID(),
+		name:      "start",
+		at:        t.factory.NewTime(),
+		comment:   comment,
 	}
 	t.events = append(t.events, evt)
 }
@@ -58,10 +60,11 @@ func (t *TimeLogger) Start(comment string) {
 // Stop closes existing unfinished entry.
 func (t *TimeLogger) Stop() {
 	evt := event{
-		uuid:    t.factory.NewUUID(),
-		name:    "stop",
-		at:      t.factory.NewTime(),
-		comment: "",
+		workspace: "default", //todo: add context in future
+		uuid:      t.factory.NewUUID(),
+		name:      "stop",
+		at:        t.factory.NewTime(),
+		comment:   "",
 	}
 
 	if len(t.events) > 0 {
@@ -222,6 +225,7 @@ func (e event) TimeString() string {
 
 func (e event) ToCsvRecord() []string {
 	return []string{
+		e.workspace,
 		e.uuid.String(),
 		FormatDateTime(e.at.UTC()),
 		e.name,
