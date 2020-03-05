@@ -7,10 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type logtimeMockFactory struct {
-	now time.Time
-}
-
 type timeMockFactory struct {
 	now time.Time
 }
