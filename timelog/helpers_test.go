@@ -5,12 +5,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
-func makeTime(value string) time.Time {
+func _time(value string) time.Time {
 	parsedTime, _ := time.Parse("2006-01-02 15:04", value)
 	return parsedTime
+}
+
+func _uuid(value string) uuid.UUID {
+	return uuid.MustParse(value)
 }
 
 func trimHeredoc(s string) string {

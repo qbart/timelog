@@ -12,24 +12,24 @@ func Test_DiffPrinter_String_WithoutStop(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 	}
 	eventsModified := []event{
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 21:59"),
+			at:      _time("2020-01-15 21:59"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:10"),
+			at:      _time("2020-01-15 22:10"),
 		},
 	}
 
@@ -55,24 +55,24 @@ func Test_DiffPrinter_String_WithStop(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 	}
 	eventsModified := []event{
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 21:59"),
+			at:      _time("2020-01-15 21:59"),
 		},
 		event{
 			name:    "stop",
 			comment: "",
-			at:      makeTime("2020-01-15 22:10"),
+			at:      _time("2020-01-15 22:10"),
 		},
 	}
 
@@ -109,24 +109,24 @@ func Test_DiffPrinter_String_NoChanges(t *testing.T) {
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 	}
 	eventsModified := []event{
 		event{
 			name:    "start",
 			comment: "hello",
-			at:      makeTime("2020-01-15 22:00"),
+			at:      _time("2020-01-15 22:00"),
 		},
 		event{
 			name:    "start",
 			comment: "world",
-			at:      makeTime("2020-01-15 22:05"),
+			at:      _time("2020-01-15 22:05"),
 		},
 	}
 
