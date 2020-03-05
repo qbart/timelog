@@ -21,6 +21,7 @@ func Test_Timelog_Start(t *testing.T) {
 	tl.Start("hello")
 
 	if assert.Equal(t, len(tl.events), 1) {
+		assert.Equal(t, tl.events[0].workspace, "default")
 		assert.Equal(t, tl.events[0].uuid, _uuid("111aa398-5f30-11ea-b48d-4cedfb79ac39"))
 		assert.Equal(t, tl.events[0].name, "start")
 		assert.Equal(t, tl.events[0].comment, "hello")
@@ -69,10 +70,11 @@ func Test_Timelog_Stop_WhenNoEventsExist(t *testing.T) {
 func Test_Timelog_Stop_WhenPreviousIsStart(t *testing.T) {
 	events := []event{
 		event{
-			uuid:    _uuid("111aa398-5f30-11ea-b48d-4cedfb79ac39"),
-			name:    "start",
-			at:      _time("2020-01-15 22:00"),
-			comment: "hello",
+			workspace: "default",
+			uuid:      _uuid("111aa398-5f30-11ea-b48d-4cedfb79ac39"),
+			name:      "start",
+			at:        _time("2020-01-15 22:00"),
+			comment:   "hello",
 		},
 	}
 	tl := TimeLogger{
@@ -88,11 +90,13 @@ func Test_Timelog_Stop_WhenPreviousIsStart(t *testing.T) {
 	tl.Stop()
 
 	if assert.Equal(t, len(tl.events), 2) {
+		assert.Equal(t, tl.events[0].workspace, "default")
 		assert.Equal(t, tl.events[0].uuid, _uuid("111aa398-5f30-11ea-b48d-4cedfb79ac39"))
 		assert.Equal(t, tl.events[0].name, "start")
 		assert.Equal(t, tl.events[0].comment, "hello")
 		assert.Equal(t, tl.events[0].at, _time("2020-01-15 22:00"))
 
+		assert.Equal(t, tl.events[1].workspace, "default")
 		assert.Equal(t, tl.events[1].uuid, _uuid("222aa398-5f30-11ea-b48d-4cedfb79ac39"))
 		assert.Equal(t, tl.events[1].name, "stop")
 		assert.Equal(t, tl.events[1].comment, "")
