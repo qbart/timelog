@@ -92,3 +92,9 @@ task start [hit TAB]
 ## How to contribute?
 
 Ask first before any implementation.
+Possible todos:
+- rich analytics (i.e. per entry) `timelog stats`
+- edit comments `timelog edit` (similar to `timelog adjust` editor)
+- quicklist management from CLI ie. `timelog qlist.add ENTRY`
+- multi-autocomplete i.e `timelog start [TAB]`, then `timelog start autocompleted-1 [TAB]` <- currently this will replace `autocompleted-1` with new qlist entry, goal is to append next one
+- autocomplete for other OSes (OSx integration anyone?)
