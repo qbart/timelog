@@ -1,5 +1,12 @@
 # timelog
 
+[![LICENSE](https://img.shields.io/github/license/qbart/timelog)](https://github.com/qbart/timelog/blob/master/LICENSE)
+[![Language](https://img.shields.io/badge/Language-Go-blue.svg)](https://golang.org/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/qbart/timelog)](https://goreportcard.com/report/github.com/qbart/timelog)
+[![Last commit](https://img.shields.io/github/last-commit/qbart/timelog)](https://github.com/qbart/timelog/commits/master)
+
+
+
 Time logging in CLI.
 
 ## Install autocompleter (bash + fzf using complete)
