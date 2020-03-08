@@ -88,3 +88,7 @@ hello
 task start [hit TAB]
 ```
 ![timelog](./doc/timelog_autocomplete_qlist.png)
+
+## How to contribute?
+
+Ask first before any implementation.
