@@ -12,10 +12,10 @@ type Analytics struct {
 	Minutes  int
 }
 
-func calcAnalytics(ee []event) Analytics {
-	h, m := calcDuration(ee)
+func calcAnalytics(t *TimeLogger) Analytics {
+	h, m := calcDuration(t.events, t.factory.NewTime())
 	return Analytics{
-		EntryNum: calcLen(ee),
+		EntryNum: calcLen(t.events),
 		Hours:    h,
 		Minutes:  m,
 	}
@@ -31,10 +31,28 @@ func calcLen(ee []event) int {
 	return sum
 }
 
-func calcDuration(ee []event) (int, int) {
-	var sum time.Duration = 0
-	for i := len(ee) - 2; i >= 0; i-- {
-		sum += ee[i+1].at.Sub(ee[i].at)
+func calcDuration(ee []event, stopTime time.Time) (int, int) {
+	var sum time.Duration
+
+	clone := make([]event, len(ee))
+	copy(clone, ee)
+
+	if len(clone) > 0 {
+		if clone[len(clone)-1].name != "stop" {
+			clone = append(clone, event{
+				name: "stop",
+				at:   stopTime,
+			})
+		}
 	}
+
+	for i := len(clone) - 2; i >= 0; i-- {
+		if clone[i].name == "stop" {
+			continue
+		}
+		d := clone[i+1].at.Sub(clone[i].at)
+		sum += d
+	}
+
 	return int(sum.Hours()), int(math.Mod(sum.Minutes(), 60))
 }

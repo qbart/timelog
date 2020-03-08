@@ -12,7 +12,7 @@ type TextPrinter struct {
 
 // Print outputs timelog to stdout.
 func (p *TextPrinter) Print() {
-	analytics := calcAnalytics(p.timelogger.events)
+	analytics := calcAnalytics(p.timelogger)
 	fmt.Println(analytics.EntryNum, "row(s)")
 	fmt.Println("---")
 	fmt.Println(p.String())
