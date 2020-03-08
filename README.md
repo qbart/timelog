@@ -9,12 +9,6 @@
 
 Time logging in CLI.
 
-## Install autocompleter (bash + fzf using complete)
-
-```
-timelog autocomplete install >> ~/.bash_profile
-```
-
 ## Usage
 
 ### Print current timelog
@@ -23,16 +17,8 @@ timelog autocomplete install >> ~/.bash_profile
 timelog
 ```
 
+![timelog](./doc/timelog.png)
 
-```
-3  row(s)
----
-2020-02-08 07:36 07:37 hello
-2020-02-08 07:37 07:43 world
-2020-02-08 08:21 ...   another
----
-7m0s
-```
 
 ### Start next task
 
@@ -64,3 +50,41 @@ timelog adjust
 1. Console UI will start (use arrows or hjkl).
 2. Enter to continue.
 3. After changes you will see git-like diff to accept/reject changes.
+
+![timelog](./doc/timelog_adjust_step1.png)
+![timelog](./doc/timelog_adjust_step2.png)
+
+## Configuration
+
+### Install autocompleter (bash + fzf using complete)
+
+Tested only in Ubuntu (PR appreciated for other OSes)
+```
+timelog autocomplete install >> ~/.bash_profile
+```
+
+```
+timelog [hit TAB]
+```
+![timelog](./doc/timelog_autocomplete_cmds.png)
+
+### Quicklist
+
+Quicklist is a data source for autocompleter (fzf). Tasks should not contain whitespaces.
+
+```
+vim ~/.config/timelog/config.ini
+```
+
+```
+[quicklist]
+task-1
+task-2
+task-3
+hello
+```
+
+```
+task start [hit TAB]
+```
+![timelog](./doc/timelog_autocomplete_qlist.png)
