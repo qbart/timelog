@@ -8,7 +8,7 @@ import (
 
 func mkdir(dirs ...string) error {
 	dir := filepath.Join(dirs...)
-	return os.MkdirAll(dir, 0640)
+	return os.MkdirAll(dir, 0755)
 }
 
 func touchFile(path string) error {
