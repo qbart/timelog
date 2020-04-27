@@ -9,6 +9,14 @@
 
 Time logging in CLI.
 
+## Install
+
+```
+git clone git@github.com:qbart/timelog.git
+cd timelog
+make build
+```
+
 ## Usage
 
 ### Print current timelog
