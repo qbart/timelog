@@ -9,24 +9,24 @@ import (
 
 func Test_DiffPrinter_String_WithoutStop(t *testing.T) {
 	eventsOriginal := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),
 		},
 	}
 	eventsModified := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 21:59"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:10"),
@@ -52,24 +52,24 @@ func Test_DiffPrinter_String_WithoutStop(t *testing.T) {
 
 func Test_DiffPrinter_String_WithStop(t *testing.T) {
 	eventsOriginal := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-15 22:05"),
 		},
 	}
 	eventsModified := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 21:59"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-15 22:10"),
@@ -106,24 +106,24 @@ func Test_DiffPrinter_String_Empty(t *testing.T) {
 
 func Test_DiffPrinter_String_NoChanges(t *testing.T) {
 	eventsOriginal := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),
 		},
 	}
 	eventsModified := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),

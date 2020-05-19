@@ -68,6 +68,11 @@ func (s *Service) TextPrinter() Printer {
 	return &TextPrinter{timelogger: s.timelogger}
 }
 
+// PolybarPrinter returns default stdout printer.
+func (s *Service) PolybarPrinter(format string) Printer {
+	return &PolybarPrinter{timelogger: s.timelogger, format: format}
+}
+
 // RunAdjustService runs adjust subservice.
 func (s *Service) RunAdjustService() {
 	srv := &AdjustService{timelogger: s.timelogger}

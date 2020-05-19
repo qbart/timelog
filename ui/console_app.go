@@ -72,6 +72,12 @@ func (app *ConsoleApp) Run() {
 
 		case "version":
 			fmt.Println("Version ", timelog.Version)
+
+		case "polybar":
+			switch flag.Arg(1) {
+			case "format":
+				app.service.PolybarPrinter(flag.Arg(2)).Print()
+			}
 		}
 	} else {
 		app.print()

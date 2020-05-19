@@ -97,6 +97,41 @@ task start [hit TAB]
 ```
 ![timelog](./doc/timelog_autocomplete_qlist.png)
 
+## Polybar (or any other bar) integration
+
+You can integrate timelog with your custom bar:
+```
+timelog polybar format "FORMAT"
+```
+
+`FORMAT` exposes following vars in `go` template:
+```go
+type polybarItem struct {
+	Comment         string // task comment
+	Duration        string // last task duration
+	Total           string // tasks total duration
+	Count           int    // task count
+	CountNotZero    bool   //
+	TotalGtDuration bool   // true when total > duration
+}
+```
+
+### Polybar example
+
+```
+[module/timelog]
+type=custom/script
+interval=10
+exec=timelog polybar format "{{if .CountNotZero }}%{F#011814}%{B#24f5bf} {{.Comment}} %{B-}%{B#0adba6} {{.Duration}} %{B-}{{ if .TotalGtDuration}}%{B#08aa81} {{.Total}} %{B-}{{ end }}%{F-}{{ end }}"
+```
+
+#### When duration equals total
+![timelog](./doc/timelog_polybar_same.png)
+#### When duration does not equal total
+![timelog](./doc/timelog_polybar.png)
+
+## Config
+
 ## How to contribute?
 
 Ask first before any implementation.

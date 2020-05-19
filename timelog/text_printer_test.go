@@ -8,7 +8,7 @@ import (
 
 func Test_TextPrinter_String_OneEntry(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
@@ -28,12 +28,12 @@ func Test_TextPrinter_String_OneEntry(t *testing.T) {
 
 func Test_TextPrinter_String_WithStartOnly(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),
@@ -53,17 +53,17 @@ func Test_TextPrinter_String_WithStartOnly(t *testing.T) {
 
 func Test_TextPrinter_String_WithStop(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-15 22:10"),
@@ -83,12 +83,12 @@ func Test_TextPrinter_String_WithStop(t *testing.T) {
 
 func Test_TextPrinter_String_SplitDaysWithStop(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-16 01:05"),
