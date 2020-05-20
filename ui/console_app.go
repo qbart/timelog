@@ -1,12 +1,13 @@
 package ui
 
 import (
-	"flag"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/qbart/timelog/cli"
 	"github.com/qbart/timelog/timelog"
+	"github.com/spf13/cobra"
 )
 
 // ConsoleApp implementation of App interface.
@@ -23,18 +24,40 @@ func NewConsoleApp(service *timelog.Service) App {
 
 // Run CLI app.
 func (app *ConsoleApp) Run() {
-	n := flag.NArg()
-	if n > 0 {
-		switch flag.Arg(0) {
-		case "start":
-			app.service.Start(app.getComment())
+	root := &cobra.Command{
+		Use:   "timelog",
+		Short: "Time logging in CLI",
+		Run: func(cmd *cobra.Command, args []string) {
 			app.print()
+		},
+	}
 
-		case "stop":
+	start := &cobra.Command{
+		Use:   "start [comment]",
+		Short: "Starts a new time entry",
+		Args:  cobra.MinimumNArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			comment := strings.Join(args, " ")
+			app.service.Start(comment)
+			app.print()
+		},
+	}
+	root.AddCommand(start)
+
+	stop := &cobra.Command{
+		Use:   "stop",
+		Short: "Stops given time entry",
+		Run: func(cmd *cobra.Command, args []string) {
 			app.service.Stop()
 			app.print()
+		},
+	}
+	root.AddCommand(stop)
 
-		case "clear":
+	clear := &cobra.Command{
+		Use:   "clear",
+		Short: "Clears all entries. No backup.",
+		Run: func(cmd *cobra.Command, args []string) {
 			app.print()
 			cli.AreYouSure("Are you sure to clear all data?", func() {
 				app.service.Clear()
@@ -42,35 +65,24 @@ func (app *ConsoleApp) Run() {
 			}, func() {
 				fmt.Println("Cancelled")
 			})
+		},
+	}
+	root.AddCommand(clear)
 
-		case "autocomplete":
-			switch flag.Arg(1) {
-			case "install":
-				app.service.InstallAutocomplete()
-
-			case "commands":
-				fmt.Println("start")
-				fmt.Println("stop")
-				fmt.Println("adjust")
-				fmt.Println("qlist")
-				fmt.Println("clear")
-				fmt.Println("version")
-
-			case "qlist":
-				for _, s := range app.service.Quicklist() {
-					fmt.Println(s)
-				}
-			}
-
-		case "qlist":
-			for _, s := range app.service.Quicklist() {
-				fmt.Println(s)
-			}
-
-		case "adjust":
+	adjust := &cobra.Command{
+		Use:   "adjust",
+		Short: "Adjusts time between entries",
+		Run: func(cmd *cobra.Command, args []string) {
 			app.service.RunAdjustService()
+		},
+	}
+	root.AddCommand(adjust)
 
-		case "archive":
+	archive := &cobra.Command{
+		Use:   "archive",
+		Short: "Archive data file",
+		Long:  "File is moved to archive subfolder in config dir",
+		Run: func(cmd *cobra.Command, args []string) {
 			app.print()
 			cli.AreYouSure("Sure to archive?", func() {
 				path, _ := app.service.Archiver().Archive()
@@ -78,25 +90,101 @@ func (app *ConsoleApp) Run() {
 			}, func() {
 				fmt.Println("Cancelled")
 			})
+		},
+	}
+	root.AddCommand(archive)
 
-		case "version":
-			fmt.Println("Version ", timelog.Version)
-
-		case "polybar":
-			switch flag.Arg(1) {
-			case "format":
-				app.service.PolybarPrinter(flag.Arg(2)).Print()
+	qlist := &cobra.Command{
+		Use:   "qlist",
+		Short: "Prints all quicklist entries",
+		Run: func(cmd *cobra.Command, args []string) {
+			for _, s := range app.service.Quicklist() {
+				fmt.Println(s)
 			}
-		}
-	} else {
-		app.print()
+		},
+	}
+	root.AddCommand(qlist)
+
+	version := &cobra.Command{
+		Use:   "version",
+		Short: "Prints software version",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Version", timelog.Version)
+		},
+	}
+	root.AddCommand(version)
+
+	polybar := &cobra.Command{
+		Use:   "polybar",
+		Short: "Polybar configuration",
+	}
+	root.AddCommand(polybar)
+
+	polybarFormat := &cobra.Command{
+		Use:   "format",
+		Short: "Polybar configuration",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			app.service.PolybarPrinter(args[0]).Print()
+		},
+		Long: `
+Comment         string // task comment
+Duration        string // last task duration
+Total           string // tasks total duration
+Count           int    // task count
+CountNotZero    bool   //
+TotalGtDuration bool   // true when total > duration
+		`,
+	}
+	polybar.AddCommand(polybarFormat)
+
+	autocomplete := &cobra.Command{
+		Use:   "autocomplete",
+		Short: "Autocomplete for entries",
+	}
+	root.AddCommand(autocomplete)
+
+	autocompleteCommands := &cobra.Command{
+		Use:   "commands",
+		Short: "List commands for autcomplete",
+		Run: func(cmd *cobra.Command, args []string) {
+			//TODO: read this from cobra
+			fmt.Println("start")
+			fmt.Println("stop")
+			fmt.Println("adjust")
+			fmt.Println("qlist")
+			fmt.Println("clear")
+			fmt.Println("version")
+		},
+	}
+	autocomplete.AddCommand(autocompleteCommands)
+
+	autocompleteQlist := &cobra.Command{
+		Use:   "qlist",
+		Short: "Quicklist for autocomplete",
+		Run: func(cmd *cobra.Command, args []string) {
+			for _, s := range app.service.Quicklist() {
+				fmt.Println(s)
+			}
+		},
+	}
+	autocomplete.AddCommand(autocompleteQlist)
+
+	autocompleteInstall := &cobra.Command{
+		Use:   "install",
+		Short: "Installation script for autocomplete",
+		Run: func(cmd *cobra.Command, args []string) {
+			app.service.InstallAutocomplete()
+		},
+	}
+	autocomplete.AddCommand(autocompleteInstall)
+
+	if err := root.Execute(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
 
 func (app *ConsoleApp) print() {
 	app.service.TextPrinter().Print()
-}
-
-func (ConsoleApp) getComment() string {
-	return strings.Join(flag.Args()[1:], " ")
 }
