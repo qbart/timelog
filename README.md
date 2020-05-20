@@ -6,8 +6,30 @@
 [![Last commit](https://img.shields.io/github/last-commit/qbart/timelog)](https://github.com/qbart/timelog/commits/master)
 
 
+```
+Time logging in CLI
 
-Time logging in CLI.
+Usage:
+  timelog [flags]
+  timelog [command]
+
+Available Commands:
+  adjust       Adjusts time between entries
+  archive      Archive data file
+  autocomplete Autocomplete for entries
+  clear        Clears all entries. No backup.
+  help         Help about any command
+  polybar      Polybar configuration
+  qlist        Prints all quicklist entries
+  start        Starts a new time entry
+  stop         Stops given time entry
+  version      Prints software version
+
+Flags:
+  -h, --help   help for timelog
+
+Use "timelog [command] --help" for more information about a command.
+```
 
 ## Install
 
@@ -61,6 +83,15 @@ timelog adjust
 
 ![timelog](./doc/timelog_adjust_step1.png)
 ![timelog](./doc/timelog_adjust_step2.png)
+
+### Archive
+
+```
+timelog archive
+```
+
+1. Current timelog will be printed.
+2. Once confirmed file will be moved to archive (`~/.config/timelog/archive/`)
 
 ## Configuration
 
