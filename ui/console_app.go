@@ -46,7 +46,7 @@ func (app *ConsoleApp) Run() {
 
 	stop := &cobra.Command{
 		Use:   "stop",
-		Short: "Stops given time entry",
+		Short: "Stops active time entry",
 		Run: func(cmd *cobra.Command, args []string) {
 			app.service.Stop()
 			app.print()
@@ -56,7 +56,7 @@ func (app *ConsoleApp) Run() {
 
 	clear := &cobra.Command{
 		Use:   "clear",
-		Short: "Clears all entries. No backup.",
+		Short: "Clears all entries",
 		Run: func(cmd *cobra.Command, args []string) {
 			app.print()
 			cli.AreYouSure("Are you sure to clear all data?", func() {
@@ -134,6 +134,9 @@ Total           string // tasks total duration
 Count           int    // task count
 CountNotZero    bool   //
 TotalGtDuration bool   // true when total > duration
+
+Example:
+  timelog polybar format "{{if .CountNotZero }}%{F#011814}%{B#24f5bf} {{.Comment}} %{B-}%{B#0adba6} {{.Duration}} %{B-}{{ if .TotalGtDuration}}%{B#08aa81} {{.Total}} %{B-}{{ end }}%{F-}{{ end }}"
 		`,
 	}
 	polybar.AddCommand(polybarFormat)

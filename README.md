@@ -17,12 +17,12 @@ Available Commands:
   adjust       Adjusts time between entries
   archive      Archive data file
   autocomplete Autocomplete for entries
-  clear        Clears all entries. No backup.
+  clear        Clears all entries
   help         Help about any command
   polybar      Polybar configuration
   qlist        Prints all quicklist entries
   start        Starts a new time entry
-  stop         Stops given time entry
+  stop         Stops active time entry
   version      Prints software version
 
 Flags:
