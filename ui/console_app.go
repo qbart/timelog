@@ -70,6 +70,15 @@ func (app *ConsoleApp) Run() {
 		case "adjust":
 			app.service.RunAdjustService()
 
+		case "archive":
+			app.print()
+			cli.AreYouSure("Sure to archive?", func() {
+				path, _ := app.service.Archiver().Archive()
+				fmt.Println("Archived to", path)
+			}, func() {
+				fmt.Println("Cancelled")
+			})
+
 		case "version":
 			fmt.Println("Version ", timelog.Version)
 

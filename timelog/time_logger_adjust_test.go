@@ -8,12 +8,12 @@ import (
 
 func TestAdjust_Adjust_ValidClone(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-15 22:05"),
@@ -29,17 +29,17 @@ func TestAdjust_Adjust_ValidClone(t *testing.T) {
 
 func TestAdjust_DurationDoesNotCrossOver(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-15 22:10"),
@@ -66,17 +66,17 @@ func TestAdjust_DurationDoesNotCrossOver(t *testing.T) {
 
 func TestAdjust_DurationNegativeCrossOver(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-15 22:10"),
@@ -96,17 +96,17 @@ func TestAdjust_DurationNegativeCrossOver(t *testing.T) {
 
 func TestAdjust_DurationPositiveCrossOver(t *testing.T) {
 	events := []event{
-		event{
+		{
 			name:    "start",
 			comment: "hello",
 			at:      _time("2020-01-15 22:00"),
 		},
-		event{
+		{
 			name:    "start",
 			comment: "world",
 			at:      _time("2020-01-15 22:05"),
 		},
-		event{
+		{
 			name:    "stop",
 			comment: "",
 			at:      _time("2020-01-15 22:10"),

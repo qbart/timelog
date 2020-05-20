@@ -45,3 +45,8 @@ func (c *Config) ConfigPath() string {
 func (c *Config) DataPath() string {
 	return filepath.Join(c.Dir, "data-default.csv")
 }
+
+// ArchivePath returns archive dir.
+func (c *Config) ArchiveDir() string {
+	return filepath.Join(c.Dir, "archive")
+}

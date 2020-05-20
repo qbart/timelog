@@ -31,7 +31,8 @@ install: build
 	cp bin/timelog $(HOME)/bin/
 
 test:
-	go test ./... -coverprofile=coverage.out -timeout=2m -parallel=4
+	gotestsum
 
 coverage: test
+	go test ./... -coverprofile=coverage.out -timeout=2m -parallel=4
 	go tool cover -html=coverage.out

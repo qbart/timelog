@@ -23,6 +23,11 @@ func touchFile(path string) error {
 	return nil
 }
 
+func fileExists(path string) bool {
+	_, err := os.Stat(path)
+	return !os.IsNotExist(err)
+}
+
 // HomeDir returns user home dir path.
 func HomeDir() string {
 	dir, _ := os.UserHomeDir()
@@ -40,4 +45,16 @@ func WriteTextFile(dir string, file string, data string) error {
 		return err
 	}
 	return nil
+}
+
+// ReadTextFile reads text file from given.
+func ReadTextFile(file string) (string, error) {
+	f, err := os.Open(file)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+	return string(b), err
 }

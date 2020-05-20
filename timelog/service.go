@@ -63,6 +63,11 @@ func (s *Service) Adjust(adjustments map[int]int) *TimeLogger {
 	return s.timelogger.Adjust(adjustments)
 }
 
+// Archiver
+func (s *Service) Archiver() *Archiver {
+	return &Archiver{config: s.timelogger.config}
+}
+
 // TextPrinter returns default stdout printer.
 func (s *Service) TextPrinter() Printer {
 	return &TextPrinter{timelogger: s.timelogger}
