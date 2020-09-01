@@ -142,45 +142,16 @@ Example:
 	polybar.AddCommand(polybarFormat)
 
 	autocomplete := &cobra.Command{
-		Use:   "autocomplete",
-		Short: "Autocomplete for entries",
+		Use: "complete",
 	}
 	root.AddCommand(autocomplete)
-
-	autocompleteCommands := &cobra.Command{
-		Use:   "commands",
-		Short: "List commands for autcomplete",
+	acBash := &cobra.Command{
+		Use: "bash",
 		Run: func(cmd *cobra.Command, args []string) {
-			//TODO: read this from cobra
-			fmt.Println("start")
-			fmt.Println("stop")
-			fmt.Println("adjust")
-			fmt.Println("qlist")
-			fmt.Println("clear")
-			fmt.Println("version")
+			root.GenBashCompletion(os.Stdout)
 		},
 	}
-	autocomplete.AddCommand(autocompleteCommands)
-
-	autocompleteQlist := &cobra.Command{
-		Use:   "qlist",
-		Short: "Quicklist for autocomplete",
-		Run: func(cmd *cobra.Command, args []string) {
-			for _, s := range app.service.Quicklist() {
-				fmt.Println(s)
-			}
-		},
-	}
-	autocomplete.AddCommand(autocompleteQlist)
-
-	autocompleteInstall := &cobra.Command{
-		Use:   "install",
-		Short: "Installation script for autocomplete",
-		Run: func(cmd *cobra.Command, args []string) {
-			app.service.InstallAutocomplete()
-		},
-	}
-	autocomplete.AddCommand(autocompleteInstall)
+	autocomplete.AddCommand(acBash)
 
 	if err := root.Execute(); err != nil {
 		fmt.Println(err)
