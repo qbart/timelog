@@ -17,17 +17,19 @@ type Analytics struct {
 	Duration
 	LastDuration   Duration
 	PrefixDuration map[string]Duration
+	PrefixOrder    []string
 }
 
 func calcAnalytics(t *TimeLogger) Analytics {
 	h, m := calcDuration(t.events, t.factory.NewTime())
 	lh, lm := calcLastDuration(t.events, t.factory.NewTime())
-	prefix := calcPrefixDuration(t.events, t.factory.NewTime())
+	prefix, order := calcPrefixDuration(t.events, t.factory.NewTime())
 	return Analytics{
 		EntryNum:       calcLen(t.events),
 		Duration:       Duration{h, m, ""},
 		LastDuration:   Duration{lh, lm, ""},
 		PrefixDuration: prefix,
+		PrefixOrder:    order,
 	}
 }
 
@@ -41,9 +43,10 @@ func calcLen(ee []event) int {
 	return sum
 }
 
-func calcPrefixDuration(ee []event, stopTime time.Time) map[string]Duration {
+func calcPrefixDuration(ee []event, stopTime time.Time) (map[string]Duration, []string) {
 	prefixes := make(map[string]Duration, 0)
-	return prefixes
+	order := make([]string, 0)
+	return prefixes, order
 }
 
 func extractPrefix(comment string) string {

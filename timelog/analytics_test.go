@@ -64,11 +64,11 @@ func TestCalcAnalyticsCommonPrefixes(t *testing.T) {
 	}
 	analytics := calcAnalytics(&tl)
 
-	assert.Equal(t, 2, analytics.EntryNum)
-	assert.Equal(t, 1, analytics.Duration.Hours)
-	assert.Equal(t, 15, analytics.Duration.Minutes)
-	assert.Equal(t, 1, analytics.LastDuration.Hours)
-	assert.Equal(t, 11, analytics.LastDuration.Minutes)
+	assert.Equal(t, []string{"aaa", "bbb"}, analytics.PrefixOrder)
+	assert.Equal(t, 0, analytics.PrefixDuration["aaa"].Hours)
+	assert.Equal(t, 10, analytics.PrefixDuration["aaa"].Minutes)
+	assert.Equal(t, 0, analytics.PrefixDuration["bbb"].Hours)
+	assert.Equal(t, 5, analytics.PrefixDuration["bbb"].Minutes)
 }
 
 func TestCalcAnalytics_MultipleStops(t *testing.T) {
