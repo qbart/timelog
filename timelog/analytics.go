@@ -5,24 +5,29 @@ import (
 	"time"
 )
 
+type Duration struct {
+	Hours   int
+	Minutes int
+	Comment string
+}
+
 // Analytics for timelog.
 type Analytics struct {
-	EntryNum    int
-	Hours       int
-	Minutes     int
-	LastHours   int
-	LastMinutes int
+	EntryNum int
+	Duration
+	LastDuration   Duration
+	PrefixDuration map[string]Duration
 }
 
 func calcAnalytics(t *TimeLogger) Analytics {
 	h, m := calcDuration(t.events, t.factory.NewTime())
 	lh, lm := calcLastDuration(t.events, t.factory.NewTime())
+	prefix := calcPrefixDuration(t.events, t.factory.NewTime())
 	return Analytics{
-		EntryNum:    calcLen(t.events),
-		Hours:       h,
-		Minutes:     m,
-		LastHours:   lh,
-		LastMinutes: lm,
+		EntryNum:       calcLen(t.events),
+		Duration:       Duration{h, m, ""},
+		LastDuration:   Duration{lh, lm, ""},
+		PrefixDuration: prefix,
 	}
 }
 
@@ -34,6 +39,15 @@ func calcLen(ee []event) int {
 		}
 	}
 	return sum
+}
+
+func calcPrefixDuration(ee []event, stopTime time.Time) map[string]Duration {
+	prefixes := make(map[string]Duration, 0)
+	return prefixes
+}
+
+func extractPrefix(comment string) string {
+	return comment
 }
 
 func calcDuration(ee []event, stopTime time.Time) (int, int) {

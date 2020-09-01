@@ -30,10 +30,45 @@ func TestCalcAnalytics(t *testing.T) {
 	analytics := calcAnalytics(&tl)
 
 	assert.Equal(t, 2, analytics.EntryNum)
-	assert.Equal(t, 1, analytics.Hours)
-	assert.Equal(t, 15, analytics.Minutes)
-	assert.Equal(t, 1, analytics.LastHours)
-	assert.Equal(t, 11, analytics.LastMinutes)
+	assert.Equal(t, 1, analytics.Duration.Hours)
+	assert.Equal(t, 15, analytics.Duration.Minutes)
+	assert.Equal(t, 1, analytics.LastDuration.Hours)
+	assert.Equal(t, 11, analytics.LastDuration.Minutes)
+}
+
+func TestCalcAnalyticsCommonPrefixes(t *testing.T) {
+	tl := TimeLogger{
+		events: []event{
+			{
+				name:    "start",
+				comment: "aaa-task-1",
+				at:      _time("2020-01-15 22:00"),
+			},
+			{
+				name:    "start",
+				comment: "aaa-task-2",
+				at:      _time("2020-01-15 22:05"),
+			},
+			{
+				name:    "start",
+				comment: "bbb-task-1",
+				at:      _time("2020-01-15 22:10"),
+			},
+			{
+				name:    "stop",
+				comment: "",
+				at:      _time("2020-01-15 22:10"),
+			},
+		},
+		factory: &timelogMockFactory{},
+	}
+	analytics := calcAnalytics(&tl)
+
+	assert.Equal(t, 2, analytics.EntryNum)
+	assert.Equal(t, 1, analytics.Duration.Hours)
+	assert.Equal(t, 15, analytics.Duration.Minutes)
+	assert.Equal(t, 1, analytics.LastDuration.Hours)
+	assert.Equal(t, 11, analytics.LastDuration.Minutes)
 }
 
 func TestCalcAnalytics_MultipleStops(t *testing.T) {
@@ -65,10 +100,10 @@ func TestCalcAnalytics_MultipleStops(t *testing.T) {
 	analytics := calcAnalytics(&tl)
 
 	assert.Equal(t, 2, analytics.EntryNum)
-	assert.Equal(t, 2, analytics.Hours)
-	assert.Equal(t, 0, analytics.Minutes)
-	assert.Equal(t, 1, analytics.LastHours)
-	assert.Equal(t, 0, analytics.LastMinutes)
+	assert.Equal(t, 2, analytics.Duration.Hours)
+	assert.Equal(t, 0, analytics.Duration.Minutes)
+	assert.Equal(t, 1, analytics.LastDuration.Hours)
+	assert.Equal(t, 0, analytics.LastDuration.Minutes)
 }
 
 func TestCalcAnalytics_OneStopInTheMiddle(t *testing.T) {
@@ -97,8 +132,8 @@ func TestCalcAnalytics_OneStopInTheMiddle(t *testing.T) {
 	analytics := calcAnalytics(&tl)
 
 	assert.Equal(t, 2, analytics.EntryNum)
-	assert.Equal(t, 1, analytics.Hours)
-	assert.Equal(t, 5, analytics.Minutes)
-	assert.Equal(t, 0, analytics.LastHours)
-	assert.Equal(t, 5, analytics.LastMinutes)
+	assert.Equal(t, 1, analytics.Duration.Hours)
+	assert.Equal(t, 5, analytics.Duration.Minutes)
+	assert.Equal(t, 0, analytics.LastDuration.Hours)
+	assert.Equal(t, 5, analytics.LastDuration.Minutes)
 }
