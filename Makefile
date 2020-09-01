@@ -30,6 +30,9 @@ install: build
 	mkdir -p $(HOME)/bin/
 	cp bin/timelog $(HOME)/bin/
 
+i: build
+	sudo cp bin/timelog /usr/local/bin
+
 test:
 	go test ./...
 

@@ -44,9 +44,9 @@ func (p *PolybarPrinter) String() string {
 	item.Count = a.EntryNum
 	item.CountNotZero = a.EntryNum != 0
 	if a.EntryNum > 0 {
-		item.Duration = fmt.Sprint(a.LastHours, "h", a.LastMinutes, "m")
+		item.Duration = fmt.Sprint(a.LastDuration.Hours, "h", a.LastDuration.Minutes, "m")
 		item.Total = fmt.Sprint(a.Hours, "h", a.Minutes, "m")
-		item.TotalGtDuration = !(a.LastHours == a.Hours && a.LastMinutes == a.Minutes)
+		item.TotalGtDuration = !(a.LastDuration.Hours == a.Hours && a.LastDuration.Minutes == a.Minutes)
 	}
 
 	tmpl, err := template.New("polybarItem").Parse(p.format)
