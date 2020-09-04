@@ -1,6 +1,7 @@
 package timelog
 
 import (
+	"fmt"
 	"math"
 	"time"
 )
@@ -9,6 +10,10 @@ type Duration struct {
 	Hours   int
 	Minutes int
 	Comment string
+}
+
+func (d Duration) TotalString() string {
+	return fmt.Sprint(d.Hours, "h", d.Minutes, "m")
 }
 
 // Analytics for timelog.
@@ -44,12 +49,57 @@ func calcLen(ee []event) int {
 }
 
 func calcPrefixDuration(ee []event, stopTime time.Time) (map[string]Duration, []string) {
-	prefixes := make(map[string]Duration, 0)
+	prefixes := make(map[string]time.Duration, 0)
 	order := make([]string, 0)
-	return prefixes, order
+
+	clone := make([]event, len(ee))
+	copy(clone, ee)
+
+	if len(clone) > 0 {
+		if clone[len(clone)-1].name != "stop" {
+			clone = append(clone, event{
+				name: "stop",
+				at:   stopTime,
+			})
+		}
+	}
+
+	for i := 0; i < len(clone)-1; i++ {
+		if clone[i].name == "stop" {
+			continue
+		}
+
+		d := clone[i+1].at.Sub(clone[i].at)
+		prefix := extractPrefix(clone[i].comment)
+		prefixes[prefix] += d
+
+		found := false
+		for _, x := range order {
+			if x == prefix {
+				found = true
+				break
+			}
+		}
+		if !found {
+			order = append(order, prefix)
+		}
+	}
+	durations := make(map[string]Duration, 0)
+	for k, v := range prefixes {
+		h, m := int(v.Hours()), int(math.Mod(v.Minutes(), 60))
+		durations[k] = Duration{h, m, ""}
+	}
+
+	return durations, order
 }
 
 func extractPrefix(comment string) string {
+	for i, c := range comment {
+		if c == '-' || c == ' ' {
+			return comment[:i]
+		}
+	}
+
 	return comment
 }
 
