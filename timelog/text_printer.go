@@ -2,7 +2,10 @@ package timelog
 
 import (
 	"fmt"
+	"os"
 	"strings"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 // TextPrinter - stdout printer.
@@ -16,8 +19,21 @@ func (p *TextPrinter) Print() {
 	fmt.Println(analytics.EntryNum, "row(s)")
 	fmt.Println("---")
 	fmt.Println(p.String())
-	fmt.Println("---")
-	fmt.Print(analytics.Hours, "h", analytics.Minutes, "m", "\n")
+	fmt.Println()
+
+	data := make([][]string, 0)
+
+	for _, p := range analytics.PrefixOrder {
+		data = append(data, []string{p, analytics.PrefixDuration[p].TotalString()})
+	}
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"prefix", "⌚"})
+	table.SetFooter([]string{"", analytics.Duration.TotalString()})
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetBorder(false)
+	table.AppendBulk(data)
+	table.Render()
 }
 
 // String returns text representation of timelog.
