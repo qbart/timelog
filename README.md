@@ -167,7 +167,6 @@ exec=timelog polybar format "{{if .CountNotZero }}%{F#011814}%{B#24f5bf} {{.Comm
 
 Ask first before any implementation.
 Possible todos:
-- rich analytics (i.e. per entry) `timelog stats`
 - edit comments `timelog edit` (similar to `timelog adjust` editor)
 - quicklist management from CLI ie. `timelog qlist.add ENTRY`
 - multi-autocomplete i.e `timelog start [TAB]`, then `timelog start autocompleted-1 [TAB]` <- currently this will replace `autocompleted-1` with new qlist entry, goal is to append next one

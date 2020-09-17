@@ -34,13 +34,14 @@ func (p *AdjustPrinter) Print() {
 	widget.WrapText = false
 	widget.Border = false
 	widget.Text = p.String()
-	widget.Title = "[j][k][up][down] select, [h][l][left][right] -/+ minute"
+	widget.Title = "[j][k][up][down] select, [h][l][left][right] -/+ minute, [1][5] step"
 	widget.SetRect(0, 0, w, h)
 
 	ui.Render(widget)
 	uiEvents := ui.PollEvents()
 
 	quit := false
+	modifier := 1
 	for {
 		select {
 		case ae := <-p.adjust:
@@ -50,6 +51,10 @@ func (p *AdjustPrinter) Print() {
 
 		case e := <-uiEvents:
 			switch e.ID {
+			case "1":
+				modifier = 1
+			case "5":
+				modifier = 5
 			case "<C-c>", "<Enter>":
 				quit = true
 			case "j", "<Down>":
@@ -58,11 +63,11 @@ func (p *AdjustPrinter) Print() {
 				p.selected--
 			case "h", "<Left>":
 				go func() {
-					p.adjust <- AdjustEvent{p.selected, -1}
+					p.adjust <- AdjustEvent{p.selected, -modifier}
 				}()
 			case "l", "<Right>":
 				go func() {
-					p.adjust <- AdjustEvent{p.selected, +1}
+					p.adjust <- AdjustEvent{p.selected, +modifier}
 				}()
 			}
 
