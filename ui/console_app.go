@@ -33,9 +33,10 @@ func (app *ConsoleApp) Run() {
 	}
 
 	start := &cobra.Command{
-		Use:   "start [comment]",
-		Short: "Starts a new time entry",
-		Args:  cobra.MinimumNArgs(1),
+		Aliases: []string{"s"},
+		Use:     "start [comment]",
+		Short:   "Starts a new time entry",
+		Args:    cobra.MinimumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			comment := strings.Join(args, " ")
 			app.service.Start(comment)
@@ -70,8 +71,9 @@ func (app *ConsoleApp) Run() {
 	root.AddCommand(clear)
 
 	adjust := &cobra.Command{
-		Use:   "adjust",
-		Short: "Adjusts time between entries",
+		Aliases: []string{"adj"},
+		Use:     "adjust",
+		Short:   "Adjusts time between entries",
 		Run: func(cmd *cobra.Command, args []string) {
 			app.service.RunAdjustService()
 		},
@@ -79,9 +81,10 @@ func (app *ConsoleApp) Run() {
 	root.AddCommand(adjust)
 
 	archive := &cobra.Command{
-		Use:   "archive",
-		Short: "Archive data file",
-		Long:  "File is moved to archive subfolder in config dir",
+		Aliases: []string{"arch"},
+		Use:     "archive",
+		Short:   "Archive data file",
+		Long:    "File is moved to archive subfolder in config dir",
 		Run: func(cmd *cobra.Command, args []string) {
 			app.print()
 			cli.AreYouSure("Sure to archive?", func() {
