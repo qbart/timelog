@@ -2,10 +2,9 @@ package timelog
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
-	"github.com/olekukonko/tablewriter"
+	"github.com/wzshiming/ctc"
 )
 
 // TextPrinter - stdout printer.
@@ -19,21 +18,15 @@ func (p *TextPrinter) Print() {
 	fmt.Println(analytics.EntryNum, "row(s)")
 	fmt.Println("---")
 	fmt.Println(p.String())
-	fmt.Println()
 
-	data := make([][]string, 0)
-
-	for _, p := range analytics.PrefixOrder {
-		data = append(data, []string{p, analytics.PrefixDuration[p].TotalString()})
+	fmt.Println(strings.Repeat("-", 22))
+	for _, prefix := range analytics.PrefixOrder {
+		duration := analytics.PrefixDuration[prefix].TotalString()
+		fmt.Println(fmt.Sprintf("%22s", duration), prefix)
 	}
-
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"prefix", "⌚"})
-	table.SetFooter([]string{"", analytics.Duration.TotalString()})
-	table.SetAlignment(tablewriter.ALIGN_LEFT)
-	table.SetBorder(false)
-	table.AppendBulk(data)
-	table.Render()
+	fmt.Println(fmt.Sprintf("%22s", "------"))
+	total := analytics.Duration.TotalString()
+	fmt.Println(fmt.Sprint(ctc.ForegroundYellow, fmt.Sprintf("%22s", total), ctc.Reset))
 }
 
 // String returns text representation of timelog.
