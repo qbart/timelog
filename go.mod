@@ -12,4 +12,5 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/wzshiming/ctc v1.2.3
 	gopkg.in/ini.v1 v1.52.0
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
